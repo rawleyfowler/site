@@ -27,6 +27,8 @@ func InitializeRoutes(router *gin.Engine) {
 	router.NoRoute(ServePage("not_found.tmpl"))
 	router.GET("/", ServePage("index.tmpl"))
 	router.GET("/resume", ServePage("resume.tmpl"))
+	router.GET("/contact", ServePage("contact.tmpl"))
+	router.GET("/blog", ServePage("wip.tmpl"));
 }
 
 // Returns a handler function to serve a page based on the template that is inputted
