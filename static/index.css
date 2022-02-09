@@ -66,25 +66,20 @@ a {
 	transition: 100ms linear;
 }
 
-a:hover {
-	color: rgba(72,61,139, 0.3);
-}
-
 a::after {
 	content: '';
 	position: absolute;
 	z-index: -1;
 	top: 83%;
-	left: -0.1em;
-	right: -0.1em;
+	left: 0;
+	right: 0;
 	bottom: 0;
-	transition: 200ms cubic-bezier(0, 0.8, 0.13, 1);
+	transition: 102ms cubic-bezier(0, 0.86, 0.1, 1);
 	background-color: rgba(72,61,139, 0.3);
 }
 
-a::after:hover {
-	background-color: rgba(129, 66, 180, 0.3);
-	top: 0%;
+a:hover:after {
+	top: 8%;
 }
 
 .header {
