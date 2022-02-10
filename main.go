@@ -26,7 +26,6 @@ var router *gin.Engine
 
 func main() {
 	router = gin.Default()
-	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.tmpl")
 	utils.InitializeRoutes(router)
 	router.Run()
