@@ -104,17 +104,16 @@ a:hover:after {
 
 .nav-item {
 	display: block;
-	margin-left: 12px;
 	margin-right: 12px;
 	font-weight: 800;
 }
 
-.nav-item:first-of-type {
-	margin-left: 0;
-}
-
 .content-wrapper {
 	margin: 12px;
+}
+
+.footer > a {
+	margin-right: 6px;
 }
 
 .footer-text {
