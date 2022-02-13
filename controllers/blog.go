@@ -21,21 +21,42 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"gitlab.com/rawleyifowler/site-rework/models"
+	"gitlab.com/rawleyifowler/site-rework/utils"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
 func RegisterBlogGroup(r *gin.RouterGroup) {
+	// Load dsn and initialize database
+	dsn := utils.LoadDSN("dsn")
+	var err error
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("Database connection failed...")
+	}
+	utils.PerformMigrations(db)
 	r.GET("/", RenderBlogPage)
 	r.GET("/post/:url", RenderIndividualBlogPost)
 }
 
 func RenderBlogPage(c *gin.Context) {
-
+	c.HTML(http.StatusOK, "blog.tmpl", *GetAllBlogPosts())
 }
 
 func RenderIndividualBlogPost(c *gin.Context) {
-
+	c.HTML(http.StatusOK, "blog_post.tmpl", GetBlogPostById(c.Param("url")))
 }
 
-func GetAllBlogPosts() {
+func GetAllBlogPosts() *[]models.BlogPost {
+	var posts []models.BlogPost
+	db.Find(&posts)
+	return &posts
+}
 
+func GetBlogPostById(id string) *models.BlogPost {
+	var post models.BlogPost
+	db.Where(&models.BlogPost{ Url: id }).First(&post)
+	return &post
 }

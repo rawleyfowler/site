@@ -1,0 +1,14 @@
+{{ template "header.tmpl" . }}
+<h2>Blog posts</h2>
+{{ range $val := . }}
+	<div class="post-record">
+		<div>
+			<a href="/blog/post/{{ $val.Url }}">{{ $val.Title }}</a>
+		</div>
+		<div>
+			{{ $val.Date }}
+		</div>
+	</div>
+{{ end }}
+
+{{ template "footer.tmpl" }}

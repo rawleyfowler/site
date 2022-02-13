@@ -16,16 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
+import (
+	"gorm.io/gorm"
+)
 
 type BlogPost struct {
-	Url string `json:"url"`
+	gorm.Model
+	Url string `json:"url" gorm:"primaryKey"`
 	Title string `json:"title"`
 	Date string `json:"date"`
-	Comments []Comment
-}
-
-// Load comments here
-func (b *BlogPost) LoadComments() bool {
-
-	return false	
+	Comments []Comment `gorm:"foreignKey:Id"`
 }

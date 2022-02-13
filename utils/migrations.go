@@ -1,5 +1,4 @@
-package main
-
+package utils
 /*
 Copyright (C) 2022 Rawley Fowler
 
@@ -16,18 +15,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
-
 import (
-	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/bootstrap"
+	"gitlab.com/rawleyifowler/site-rework/models"
+	"gorm.io/gorm"
 )
 
-var router *gin.Engine
-var dsn string
-
-func main() {	
-	router = gin.Default()
-	router.LoadHTMLGlob("templates/*.tmpl")
-	bootstrap.InitializeRoutes(router)
-	router.Run()
+// Performs migrations of all models
+func PerformMigrations(db *gorm.DB) {
+	db.AutoMigrate(&models.BlogPost{})
+	db.AutoMigrate(&models.Comment{})
 }

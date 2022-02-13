@@ -1,4 +1,4 @@
-package main
+package bootstrap
 
 /*
 Copyright (C) 2022 Rawley Fowler
@@ -19,15 +19,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/bootstrap"
+	"gitlab.com/rawleyifowler/site-rework/controllers"
+	"net/http"
 )
 
-var router *gin.Engine
-var dsn string
+// Initializes all routes from the controller package
+func InitializeRoutes(router *gin.Engine) {
+	router.NoRoute(ServePage("not_found.tmpl"))
+	blogGroup := router.Group("/blog")
+	controllers.RegisterBlogGroup(blogGroup)
+	router.GET("/", ServePage("index.tmpl"))
+	router.GET("/resume", ServePage("resume.tmpl"))
+	router.GET("/contact", ServePage("contact.tmpl"))
+}
 
-func main() {	
-	router = gin.Default()
-	router.LoadHTMLGlob("templates/*.tmpl")
-	bootstrap.InitializeRoutes(router)
-	router.Run()
+// Returns a handler function to serve a page based on the template that is inputted
+func ServePage(temp string) gin.HandlerFunc  {
+	return func(c *gin.Context) {
+		c.HTML(
+			http.StatusOK,
+			temp,
+			gin.H{},
+		)		
+	}
 }

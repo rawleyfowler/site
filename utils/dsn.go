@@ -1,5 +1,4 @@
 package utils
-
 /*
 Copyright (C) 2022 Rawley Fowler
 
@@ -16,28 +15,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
-
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"os"
+	"bufio"
 )
 
-// Initializes all routes from the controller package
-func InitializeRoutes(router *gin.Engine) {
-	router.NoRoute(ServePage("not_found.tmpl"))
-	router.GET("/", ServePage("index.tmpl"))
-	router.GET("/resume", ServePage("resume.tmpl"))
-	router.GET("/contact", ServePage("contact.tmpl"))
-	router.GET("/blog", ServePage("wip.tmpl"));
-}
-
-// Returns a handler function to serve a page based on the template that is inputted
-func ServePage(temp string) gin.HandlerFunc  {
-	return func(c *gin.Context) {
-		c.HTML(
-			http.StatusOK,
-			temp,
-			gin.H{},
-		)		
+// Loads the dsn via OS file system and then returns the value as a string
+func LoadDSN(dsnPath string) string {
+	file, err := os.Open(dsnPath)
+	if err != nil {
+		panic("Could not find DSN for database...")
 	}
+	defer file.Close()
+	reader := bufio.NewScanner(file)	
+	// The dsn should be the first line of the file
+	return reader.Text()
 }

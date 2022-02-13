@@ -16,8 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
+import (
+	"gorm.io/gorm"
+)
 
 type Comment struct {
+	gorm.Model
+	Id uint `json:"id"`
 	Date string `json:"date"`
 	Author string `json:"author"`
 	Content string `json:"content"`
