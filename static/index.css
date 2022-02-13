@@ -112,6 +112,10 @@ a:hover:after {
 	margin: 12px;
 }
 
+.subtext {
+	font-size: clamp(5px, 0.10em, 7px);
+}
+
 .footer > a {
 	margin-right: 6px;
 }
