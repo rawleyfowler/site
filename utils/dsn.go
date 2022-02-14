@@ -29,5 +29,8 @@ func LoadDSN(dsnPath string) string {
 	defer file.Close()
 	reader := bufio.NewScanner(file)	
 	// The dsn should be the first line of the file
-	return reader.Text()
+	if reader.Scan() {
+		return reader.Text()
+	}
+	panic(dsnPath + " is empty...")
 }
