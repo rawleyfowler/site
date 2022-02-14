@@ -113,7 +113,7 @@ a:hover:after {
 }
 
 .subtext {
-	font-size: clamp(5px, 0.10em, 7px);
+	font-size: clamp(5px, 8px, 9px);
 }
 
 .footer > a {
