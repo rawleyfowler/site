@@ -1,5 +1,6 @@
 {{ template "header.tmpl" . }}
 <h2>Blog posts</h2>
+
 {{ range $val := . }}
 	<div class="post-record">
 		<div>
@@ -9,6 +10,8 @@
 			{{ $val.Date }}
 		</div>
 	</div>
+{{ else }}
+	<p>No blog posts...</p>
 {{ end }}
 
 {{ template "footer_no_banners.tmpl" }}
