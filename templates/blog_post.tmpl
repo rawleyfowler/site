@@ -1,0 +1,16 @@
+{{ template "header.tmpl" . }}
+<div>
+{{ range $comment := .Comments }}
+	<div class="comment">
+		<div>
+			By {{ $comment.Author }} on{{ $comment.Date }}
+		</div>
+		<div>
+			{{ $comment.Content }}
+		</div>
+	</div>
+{{ else }}
+	<p>No comments...</p>
+{{ end }}
+</div>
+{{ template "footer.tmpl" . }}
