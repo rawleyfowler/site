@@ -21,17 +21,15 @@ import (
 	"os"
 )
 
-// Loads the dsn via OS file system and then returns the value as a string
-func LoadDSN(dsnPath string) string {
-	file, err := os.Open(dsnPath)
-	if err != nil {
-		panic("Could not find DSN for database...")
-	}
+func LoadApiKey(path string) string {
+	file, err := os.Open(path)
 	defer file.Close()
+	if err != nil {
+		panic("Could not find file: " + path)
+	}
 	reader := bufio.NewScanner(file)
-	// The dsn should be the first line of the file
 	if reader.Scan() {
 		return reader.Text()
 	}
-	panic(dsnPath + " is empty...")
+	panic(path + " is empty...")
 }

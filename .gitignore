@@ -2,3 +2,5 @@
 .swp
 main
 dsn
+*.pem
+api_key.pem

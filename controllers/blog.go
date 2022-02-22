@@ -18,19 +18,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
-	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/models"
 	"gitlab.com/rawleyifowler/site-rework/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var (
+	db     *gorm.DB
+	apiKey string
+)
 
 func RegisterBlogGroup(r *gin.RouterGroup) {
 	// Load dsn and initialize database
 	dsn := utils.LoadDSN("dsn")
+	apiKey = utils.LoadApiKey("api_key.pem")
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -39,6 +46,7 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	utils.PerformMigrations(db)
 	r.GET("/", RenderBlogPage)
 	r.GET("/post/:url", RenderIndividualBlogPost)
+	r.POST("/post", CreateBlogPost)
 }
 
 func RenderBlogPage(c *gin.Context) {
@@ -49,6 +57,24 @@ func RenderIndividualBlogPost(c *gin.Context) {
 	c.HTML(http.StatusOK, "blog_post.tmpl", GetBlogPostById(c.Param("url")))
 }
 
+func CreateBlogPost(c *gin.Context) {
+	reqKey, err := c.Request.Cookie("APK")
+	if err != nil {
+		c.Status(406)
+		return
+	}
+	if reqKey.Value != apiKey {
+		c.Status(403)
+		return
+	}
+	data, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.Status(406)
+		return
+	}
+	log.Println(data)
+}
+
 func GetAllBlogPosts() *[]models.BlogPost {
 	var posts []models.BlogPost
 	db.Find(&posts)
@@ -57,6 +83,6 @@ func GetAllBlogPosts() *[]models.BlogPost {
 
 func GetBlogPostById(id string) *models.BlogPost {
 	var post models.BlogPost
-	db.Where(&models.BlogPost{ Url: id }).First(&post)
+	db.Where(&models.BlogPost{Url: id}).First(&post)
 	return &post
 }
