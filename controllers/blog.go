@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
+	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -67,12 +67,19 @@ func CreateBlogPost(c *gin.Context) {
 		c.Status(403)
 		return
 	}
-	data, err := ioutil.ReadAll(c.Request.Body)
+	raw, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.Status(406)
 		return
 	}
-	log.Println(data)
+	var data models.BlogPost
+	// Write the data from the request to the data variable
+	if json.Unmarshal([]byte(raw), &data) != nil {
+		c.Status(406)
+		return
+	}
+	// Create the blog post in the database
+	db.Create(&data)
 }
 
 func GetAllBlogPosts() *[]models.BlogPost {
