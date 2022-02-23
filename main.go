@@ -25,8 +25,9 @@ import (
 var router *gin.Engine
 var dsn string
 
-func main() {	
+func main() {
 	router = gin.Default()
+	// This needs to change because of RCCTL in OpenBSD, not sure if you can use a ksh variable as path in Gin but i'll test
 	router.LoadHTMLGlob("templates/*.tmpl")
 	bootstrap.InitializeRoutes(router)
 	router.Run()
