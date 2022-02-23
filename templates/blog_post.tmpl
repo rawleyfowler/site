@@ -1,5 +1,7 @@
 {{ template "header.tmpl" . }}
 <div>
+	<h3>{{ .Title }}</h3>
+	<div>{{ .Content }}</div>
 {{ range $comment := .Comments }}
 	<div class="comment">
 		<div>
@@ -15,7 +17,7 @@
 <form method="POST" action="">
 	<input type="text" placeholder="Name" name="author"/>	
 	<input type="field" name="content" />
-	<input type="text" value="{{ .Url }}" readonly />
+	<input type="text" style="display: none;" value="{{ .Url }}" readonly />
 </form>
 </div>
 {{ template "footer.tmpl" . }}
