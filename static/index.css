@@ -131,12 +131,12 @@ a:hover:after {
 }
 
 .post-record { 
-	padding-left: 6px;
 	padding-right: 6px;
 	width: 200px + 2vw;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+	justify-content: space-between;
 	margin-top: 12px;
 }
 

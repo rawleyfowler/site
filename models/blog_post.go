@@ -22,8 +22,8 @@ import (
 
 type BlogPost struct {
 	gorm.Model
-	Url      string    `json:"url" gorm:"primaryKey"`
-	Title    string    `json:"title"`
+	Url      string    `json:"url" gorm:"primaryKey" gorm:"unique"`
+	Title    string    `json:"title" gorm:"unique"`
 	Date     string    `json:"date"`
 	Content  string    `json:"content"`
 	Comments []Comment `gorm:"foreignKey:Id"`
