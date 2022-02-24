@@ -26,5 +26,5 @@ type BlogPost struct {
 	Title    string    `json:"title" gorm:"unique"`
 	Date     string    `json:"date"`
 	Content  string    `json:"content"`
-	Comments []Comment `gorm:"foreignKey:Id"`
+	Comments []Comment `gorm:"foreignKey:AssociatedPost"`
 }

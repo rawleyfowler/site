@@ -22,8 +22,9 @@ import (
 
 type Comment struct {
 	gorm.Model
-	Id      uint   `json:"id"`
-	Date    string `json:"date"`
-	Author  string `json:"author"`
-	Content string `json:"content"`
+	Id             uint   `json:"id" gorm: "primaryKey" gorm: "unique"`
+	Date           string `json:"date"`
+	Author         string `json:"author" form:"author"`
+	Content        string `json:"content" form:"content"`
+	AssociatedPost string
 }

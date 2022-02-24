@@ -54,28 +54,33 @@ func RenderBlogPage(c *gin.Context) {
 }
 
 func RenderIndividualBlogPost(c *gin.Context) {
-	c.HTML(http.StatusOK, "blog_post.tmpl", GetBlogPostById(c.Param("url")))
+	bp := GetBlogPostById(c.Param("url"))
+	if bp == nil {
+		c.HTML(http.StatusNotFound, "not_found.tmpl", gin.H{})
+	} else {
+		c.HTML(http.StatusOK, "blog_post.tmpl", bp)
+	}
 }
 
 func CreateBlogPost(c *gin.Context) {
 	reqKey, err := c.Request.Cookie("APK")
 	if err != nil {
-		c.Status(406)
+		c.Status(http.StatusForbidden)
 		return
 	}
 	if reqKey.Value != apiKey {
-		c.Status(403)
+		c.Status(http.StatusForbidden)
 		return
 	}
 	raw, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		c.Status(406)
+		c.Status(http.StatusNotAcceptable)
 		return
 	}
 	var data models.BlogPost
 	// Write the data from the request to the data variable
 	if json.Unmarshal([]byte(raw), &data) != nil {
-		c.Status(406)
+		c.Status(http.StatusNotAcceptable)
 		return
 	}
 	// Create the blog post in the database
@@ -90,6 +95,9 @@ func GetAllBlogPosts() *[]models.BlogPost {
 
 func GetBlogPostById(id string) *models.BlogPost {
 	var post models.BlogPost
-	db.Where(&models.BlogPost{Url: id}).First(&post)
+	err := db.Where(&models.BlogPost{Url: id}).First(&post).Error
+	if err != nil {
+		return nil
+	}
 	return &post
 }

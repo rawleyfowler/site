@@ -27,8 +27,9 @@ var dsn string
 
 func main() {
 	router = gin.Default()
+	router.Use(gin.Recovery())
 	// This needs to change because of RCCTL in OpenBSD, not sure if you can use a ksh variable as path in Gin but i'll test
 	router.LoadHTMLGlob("templates/*.tmpl")
 	bootstrap.InitializeRoutes(router)
-	router.Run()
+	router.Run(":8080")
 }
