@@ -22,9 +22,9 @@ import (
 
 type BlogPost struct {
 	gorm.Model
-	Url      string    `json:"url" gorm:"primaryKey" gorm:"unique"`
+	Url      string    `json:"url" gorm:"primaryKey"`
 	Title    string    `json:"title" gorm:"unique"`
-	Date     string    `json:"date"`
+	Date     string    `json:"date" gorm:"default:NOW()"`
 	Content  string    `json:"content"`
-	Comments []Comment `gorm:"foreignKey:AssociatedPost"`
+	Comments []Comment `gorm:"foreignKey:AssociatedPost;references:Url;type:varchar(191)"`
 }

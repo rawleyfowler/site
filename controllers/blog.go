@@ -1,8 +1,6 @@
 package controllers
 
-/*
-Copyright (C) 2022 Rawley Fowler
-
+/* Copyright (C) 2022 Rawley Fowler
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -47,6 +45,7 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	r.GET("/", RenderBlogPage)
 	r.GET("/post/:url", RenderIndividualBlogPost)
 	r.POST("/post", CreateBlogPost)
+	r.POST("/post/comment", CreateComment)
 }
 
 func RenderBlogPage(c *gin.Context) {
@@ -84,18 +83,43 @@ func CreateBlogPost(c *gin.Context) {
 		return
 	}
 	// Create the blog post in the database
-	db.Create(&data)
+	if db.Create(&data).Error != nil {
+		c.Status(http.StatusNotAcceptable)
+	} else {
+		c.Status(http.StatusAccepted)
+	}
+}
+
+func CreateComment(c *gin.Context) {
+	if c.Request.ParseForm() != nil {
+		c.Status(http.StatusNotAcceptable)
+		return
+	}
+	comment := models.Comment{
+		Author:         c.Request.Form.Get("author"),
+		Content:        c.Request.Form.Get("content"),
+		AssociatedPost: c.Request.Form.Get("url"),
+	}
+	db.Create(&comment)
 }
 
 func GetAllBlogPosts() *[]models.BlogPost {
 	var posts []models.BlogPost
-	db.Find(&posts)
+	// Select title, date, and url fields from the blog post records an store them in posts.
+	// This is so we don't grab the entire blog post when we render them on the overview page. Saves a couple ms.
+	db.Model(&models.BlogPost{}).Select("title, date, url").Take(&posts)
 	return &posts
 }
 
 func GetBlogPostById(id string) *models.BlogPost {
 	var post models.BlogPost
 	err := db.Where(&models.BlogPost{Url: id}).First(&post).Error
+	if err != nil {
+		return nil
+	}
+	// TODO: Figure out gorm joins!
+	// gorm joins are not working at all, just going to do another query to make it work for now.
+	err = db.Where(&models.Comment{AssociatedPost: id}).Find(&post.Comments).Error
 	if err != nil {
 		return nil
 	}

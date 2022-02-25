@@ -22,8 +22,8 @@ import (
 
 type Comment struct {
 	gorm.Model
-	Id             uint   `json:"id" gorm: "primaryKey" gorm: "unique"`
-	Date           string `json:"date"`
+	Id             uint   `json:"id" gorm:"primaryKey, AUTO_INCREMENT"`
+	Date           string `json:"date" gorm:"default:NOW()"`
 	Author         string `json:"author" form:"author"`
 	Content        string `json:"content" form:"content"`
 	AssociatedPost string
