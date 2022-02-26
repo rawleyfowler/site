@@ -1,11 +1,13 @@
 {{ template "header.tmpl" . }}
 		<h2>Your comment <u>failed</u> to be posted...</h2>
 		<p>You will be redirected or, click <a href="/blog/post/{{ .Url }}">here</a> to return to the blog post.</p>
-		<input value="{{ .Url }}" readonly style="display: none;" id="url"/>
-		<script>
-			setTimeout(() => {
-				window.location.replace("/blog/post/" + document.getElementById("url").value)
-			}, 1500)
-		</script>
+		<p>
+			<h3>Your comment failed for one of these reasons:</h3>
+		</p>
+		<ul>
+			<li>You failed the captcha.</li>
+			<li>Your post had links in it.</li>
+			<li>The name on your comment was "rawley" or "admin".</li>
+		</ul>
 	</body>
 </html>
