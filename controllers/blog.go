@@ -120,13 +120,17 @@ func CreateComment(c *gin.Context) {
 		c.Request.Form.Get("content"),
 		c.Request.Form.Get("url"),
 		c.Request.Form.Get("captcha")}
+	if len(a[1]) > 180 && len(*GetCommentsByContent(a[1], a[2])) > 0 {
+		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
+		return
+	}
 	i, err := strconv.ParseInt(a[3], 10, 32)
 	if err != nil || int(i) != (captchaVals[0]+captchaVals[1]) {
 		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
 		return
 	}
 	if GetNumberOfRecentPosts(c) > 3 {
-		c.HTML(http.StatusOK, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
+		c.HTML(http.StatusNotAcceptable, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
 		return
 	}
 	for _, v := range a {
@@ -163,15 +167,24 @@ func GetAllBlogPosts() *[]models.BlogPost {
 
 func GetBlogPostById(id string) *models.BlogPost {
 	var post models.BlogPost
-	err := db.Where(&models.BlogPost{Url: id}).Find(&post).Error
+	err := db.Model(&post).Where(&models.BlogPost{Url: id}).Find(&post).Error
 	if err != nil {
 		return nil
 	}
 	// TODO: Figure out gorm joins!
 	// gorm joins are not working at all, just going to do another query to make it work for now.
-	err = db.Where(&models.Comment{AssociatedPost: id}).Find(&post.Comments).Error
+	err = db.Model(&models.Comment{}).Where(&models.Comment{AssociatedPost: id}).Find(&post.Comments).Error
 	if err != nil {
 		return nil
 	}
 	return &post
+}
+
+func GetCommentsByContent(content string, url string) *[]models.Comment {
+	var comments []models.Comment
+	err := db.Model(&comments).Where("content like ? and associated_post like ?", "%"+content+"%", url).Scan(&comments).Error
+	if err != nil {
+		return &[]models.Comment{}
+	}
+	return &comments
 }
