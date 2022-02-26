@@ -182,7 +182,7 @@ func GetBlogPostById(id string) *models.BlogPost {
 
 func GetCommentsByContent(content string, url string) *[]models.Comment {
 	var comments []models.Comment
-	err := db.Model(&comments).Where("content like ? and associated_post like ?", "%"+content+"%", url).Scan(&comments).Error
+	err := db.Model(&comments).Where("content like ? and associated_post like ?", "%"+content[1:]+"%", url).Scan(&comments).Error
 	if err != nil {
 		return &[]models.Comment{}
 	}
