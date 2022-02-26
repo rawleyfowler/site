@@ -113,13 +113,14 @@ func CreateComment(c *gin.Context) {
 	a := []string{c.Request.Form.Get("author"),
 		c.Request.Form.Get("content"),
 		c.Request.Form.Get("url")}
+
 	if GetNumberOfRecentPosts(c) > 3 {
 		c.HTML(http.StatusOK, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
 		return
 	}
 	for _, v := range a {
 		if len(v) == 0 {
-			c.Status(http.StatusNotAcceptable)
+			c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
 			return
 		}
 	}
