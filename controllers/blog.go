@@ -49,7 +49,12 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 }
 
 func RenderBlogPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "blog.tmpl", *GetAllBlogPosts())
+	posts := GetAllBlogPosts()
+	if posts == nil {
+		c.HTML(http.StatusInternalServerError, "internal_server_error.tmpl", gin.H{})
+	} else {
+		c.HTML(http.StatusOK, "blog.tmpl", posts)
+	}
 }
 
 func RenderIndividualBlogPost(c *gin.Context) {
@@ -118,7 +123,10 @@ func GetAllBlogPosts() *[]models.BlogPost {
 	var posts []models.BlogPost
 	// Select title, date, and url fields from the blog post records an store them in posts.
 	// This is so we don't grab the entire blog post when we render them on the overview page. Saves a couple ms.
-	db.Model(&models.BlogPost{}).Select("title, date, url").Take(&posts)
+	err := db.Model(&models.BlogPost{}).Select("title, date, url").Take(&posts).Error
+	if err != nil {
+		return nil
+	}
 	return &posts
 }
 
