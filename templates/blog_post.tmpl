@@ -6,9 +6,9 @@
 {{ range $comment := .Comments }}
 	<div class="comment">
 		<div>
-			By {{ $comment.Author }} on{{ $comment.Date }}
+			{{ $comment.Author }} at {{ $comment.Date }}
 		</div>
-		<div>
+		<div class="comment-body">
 			{{ $comment.Content }}
 		</div>
 	</div>
