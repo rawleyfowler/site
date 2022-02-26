@@ -1,9 +1,9 @@
 {{ template "header.tmpl" . }}
 <div>
-	<h2>{{ .Title }}</h2>
-	<div>{{ .Content }}</div>
+	<h2>{{ .Post.Title }}</h2>
+	<div>{{ .Post.Content }}</div>
 <h4>Comments</h4>
-{{ range $comment := .Comments }}
+{{ range $comment := .Post.Comments }}
 	<div class="comment">
 		<div>
 			{{ $comment.Author }} at {{ $comment.Date }}
@@ -19,7 +19,8 @@
 <form method="POST" action="/blog/post/comment">
 	<input type="text" required pattern=".{3,}" title="Author name must be atleast 3 chars." placeholder="Name" maxlength="50" name="author"/>	
 	<input type="field" required pattern=".{15,}" title="Your comment must be atleast 15 chars." placeholder="Comment" maxlength="500" name="content" />
-	<input type="text" required style="display: none;" name="url" value="{{ .Url }}" readonly />
+	<input type="text" required pattern="^\d+" title="The captcha must be a number." placeholder="What is {{ index .Captcha 0 }} + {{ index .Captcha 1 }}?" maxlength="10" name="captcha" />
+	<input type="text" required style="display: none;" name="url" value="{{ .Post.Url }}" readonly />
 	<button type="submit">Post</button>
 </form>
 </div>

@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/models"
@@ -35,6 +36,7 @@ var (
 	db            *gorm.DB
 	apiKey        string
 	recentPosters map[string]uint
+	captchaVals   [2]int
 )
 
 func RegisterBlogGroup(r *gin.RouterGroup) {
@@ -56,6 +58,7 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	r.POST("/post/comment", CreateComment)
 	// Clear the commenters cache every 15 minutes
 	go utils.TimedClearMap(&recentPosters, 180000*5)
+	go utils.UpdateCaptcha(&captchaVals)
 }
 
 func RenderBlogPage(c *gin.Context) {
@@ -72,7 +75,10 @@ func RenderIndividualBlogPost(c *gin.Context) {
 	if bp == nil {
 		c.HTML(http.StatusNotFound, "not_found.tmpl", gin.H{})
 	} else {
-		c.HTML(http.StatusOK, "blog_post.tmpl", bp)
+		c.HTML(http.StatusOK, "blog_post.tmpl", struct {
+			Post    *models.BlogPost
+			Captcha [2]int
+		}{Post: bp, Captcha: captchaVals})
 	}
 }
 
@@ -112,8 +118,13 @@ func CreateComment(c *gin.Context) {
 	}
 	a := []string{c.Request.Form.Get("author"),
 		c.Request.Form.Get("content"),
-		c.Request.Form.Get("url")}
-
+		c.Request.Form.Get("url"),
+		c.Request.Form.Get("captcha")}
+	i, err := strconv.ParseInt(a[3], 10, 32)
+	if err != nil || int(i) != (captchaVals[0]+captchaVals[1]) {
+		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
+		return
+	}
 	if GetNumberOfRecentPosts(c) > 3 {
 		c.HTML(http.StatusOK, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
 		return
