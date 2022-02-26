@@ -61,10 +61,9 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 func RenderBlogPage(c *gin.Context) {
 	posts := GetAllBlogPosts()
 	if posts == nil {
-		c.HTML(http.StatusInternalServerError, "internal_server_error.tmpl", gin.H{})
-	} else {
-		c.HTML(http.StatusOK, "blog.tmpl", posts)
+		posts = &[]models.BlogPost{}
 	}
+	c.HTML(http.StatusOK, "blog.tmpl", posts)
 }
 
 func RenderIndividualBlogPost(c *gin.Context) {
