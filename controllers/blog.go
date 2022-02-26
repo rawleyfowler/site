@@ -95,12 +95,23 @@ func CreateComment(c *gin.Context) {
 		c.Status(http.StatusNotAcceptable)
 		return
 	}
+	a := []string{c.Request.Form.Get("author"),
+		c.Request.Form.Get("content"),
+		c.Request.Form.Get("url")}
+	for _, v := range a {
+		if len(v) == 0 {
+			c.Status(http.StatusNotAcceptable)
+			return
+		}
+	}
 	comment := models.Comment{
-		Author:         c.Request.Form.Get("author"),
-		Content:        c.Request.Form.Get("content"),
-		AssociatedPost: c.Request.Form.Get("url"),
+		Author:         a[0],
+		Content:        a[1],
+		AssociatedPost: a[2],
 	}
 	db.Create(&comment)
+	// Pass the associated post to the template to add to the href
+	c.HTML(http.StatusOK, "comment_post.tmpl", struct{ Url string }{Url: comment.AssociatedPost})
 }
 
 func GetAllBlogPosts() *[]models.BlogPost {
