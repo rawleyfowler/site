@@ -59,7 +59,7 @@ h4 {
 }
 
 p { 
-	font-size: 1.15em;
+	font-size: 1.2em;
 	font-weight: 400;
 	line-height: 1.4;
 	max-width: 33em;
@@ -138,6 +138,11 @@ a:hover:after {
 	flex-wrap: wrap;
 	justify-content: space-between;
 	margin-top: 12px;
+}
+
+.post-record-title {
+	font-size: 1.3em;
+	font-weight: 400;
 }
 
 .skill-keywords {

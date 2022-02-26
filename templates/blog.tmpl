@@ -3,7 +3,7 @@
 {{ range $val := . }}
 	<div class="post-record">
 		<div>
-			<a href="/blog/post/{{ $val.Url }}">{{ $val.Title }}</a>
+			<a class="post-record-title" href="/blog/post/{{ $val.Url }}">{{ $val.Title }}</a>
 		</div>
 		<div>
 			{{ $val.Date }}
