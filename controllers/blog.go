@@ -27,14 +27,22 @@ import (
 	"gorm.io/gorm"
 )
 
+type CommentDto struct {
+	Url string
+}
+
 var (
-	db     *gorm.DB
-	apiKey string
+	db            *gorm.DB
+	apiKey        string
+	recentPosters map[string]uint
 )
 
 func RegisterBlogGroup(r *gin.RouterGroup) {
+	// Initialize recent posters cache
+	recentPosters = make(map[string]uint)
 	// Load dsn and initialize database
 	dsn := utils.LoadDSN("dsn")
+	// Load and initialize api key
 	apiKey = utils.LoadApiKey("api_key.pem")
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -46,6 +54,8 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	r.GET("/post/:url", RenderIndividualBlogPost)
 	r.POST("/post", CreateBlogPost)
 	r.POST("/post/comment", CreateComment)
+	// Clear the commenters cache every 15 minutes
+	go utils.TimedClearMap(&recentPosters, 180000*5)
 }
 
 func RenderBlogPage(c *gin.Context) {
@@ -103,6 +113,10 @@ func CreateComment(c *gin.Context) {
 	a := []string{c.Request.Form.Get("author"),
 		c.Request.Form.Get("content"),
 		c.Request.Form.Get("url")}
+	if GetNumberOfRecentPosts(c) > 3 {
+		c.HTML(http.StatusOK, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
+		return
+	}
 	for _, v := range a {
 		if len(v) == 0 {
 			c.Status(http.StatusNotAcceptable)
@@ -115,8 +129,13 @@ func CreateComment(c *gin.Context) {
 		AssociatedPost: a[2],
 	}
 	db.Create(&comment)
+	recentPosters[c.ClientIP()]++
 	// Pass the associated post to the template to add to the href
-	c.HTML(http.StatusOK, "comment_post.tmpl", struct{ Url string }{Url: comment.AssociatedPost})
+	c.HTML(http.StatusOK, "comment_post.tmpl", CommentDto{Url: comment.AssociatedPost})
+}
+
+func GetNumberOfRecentPosts(c *gin.Context) uint {
+	return recentPosters[c.ClientIP()]
 }
 
 func GetAllBlogPosts() *[]models.BlogPost {
