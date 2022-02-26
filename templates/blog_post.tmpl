@@ -17,8 +17,8 @@
 {{ end }}
 <h4>Leave a comment!</h4>
 <form method="POST" action="/blog/post/comment">
-	<input type="text" placeholder="Name" name="author"/>	
-	<input type="field" placeholder="Comment" name="content" />
+	<input type="text" placeholder="Name" maxlength="50" name="author"/>	
+	<input type="field" placeholder="Comment" maxlength="500" name="content" />
 	<input type="text" style="display: none;" name="url" value="{{ .Url }}" readonly />
 	<button type="submit">Post</button>
 </form>
