@@ -104,8 +104,9 @@ func CreateBlogPost(c *gin.Context) {
 		return
 	}
 	// Create the blog post in the database
-	if db.Create(&data).Error != nil {
-		c.Status(http.StatusNotAcceptable)
+	err = db.Create(&data).Error
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, "{ \"error\": "+err.Error()+" }")
 	} else {
 		c.Status(http.StatusAccepted)
 	}
@@ -186,6 +187,7 @@ func GetBlogPostById(id string) *models.BlogPost {
 }
 
 func GetCommentsByContent(content string, url string) *[]models.Comment {
+	// This is used to make sure people don't paste the same thing over and over.
 	var comments []models.Comment
 	err := db.Model(&comments).Where("content like ? and associated_post like ?", "%"+content[1:]+"%", url).Scan(&comments).Error
 	if err != nil {

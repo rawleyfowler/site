@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
+	"html/template"
+
 	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/bootstrap"
 )
@@ -28,6 +30,13 @@ var dsn string
 func main() {
 	router = gin.Default()
 	router.Use(gin.Recovery())
+	// Create function map for templates that will unescape HTML from the database
+	// Credits to: https://h1z3y3.me/posts/go-html-template-script-unescape
+	funcMap := make(template.FuncMap)
+	funcMap["UnescapeHTML"] = func(s string) template.HTML {
+		return template.HTML(s)
+	}
+	router.SetFuncMap(funcMap)
 	// This needs to change because of RCCTL in OpenBSD, not sure if you can use a ksh variable as path in Gin but i'll test
 	router.LoadHTMLGlob("templates/*.tmpl")
 	bootstrap.InitializeRoutes(router)

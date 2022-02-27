@@ -1,7 +1,7 @@
 {{ template "header.tmpl" . }}
 <div>
 	<h2>{{ .Post.Title }}</h2>
-	<div>{{ .Post.Content }}</div>
+	<div>{{ .Post.Content | UnescapeHTML }}</div>
 <h4>Comments</h4>
 {{ range $comment := .Post.Comments }}
 	<div class="comment">
