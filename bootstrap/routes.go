@@ -18,9 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/controllers"
-	"net/http"
 )
 
 // Initializes all routes from the controller package
@@ -34,12 +36,20 @@ func InitializeRoutes(router *gin.Engine) {
 }
 
 // Returns a handler function to serve a page based on the template that is inputted
-func ServePage(temp string) gin.HandlerFunc  {
+func ServePage(temp string) gin.HandlerFunc {
+	title := strings.Split(temp, ".")[0]
+	if title == "index" {
+		// Index is the home page so we don't care
+		title = ""
+	} else {
+		// Else title it accordingly
+		title = " | " + title
+	}
 	return func(c *gin.Context) {
 		c.HTML(
 			http.StatusOK,
 			temp,
-			gin.H{},
-		)		
+			struct{ Title string }{Title: title},
+		)
 	}
 }

@@ -64,17 +64,21 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 func RenderBlogPage(c *gin.Context) {
 	posts := GetAllBlogPosts()
 	if posts == nil {
-		c.HTML(http.StatusInternalServerError, "internal_server_error.tmpl", gin.H{})
+		c.HTML(http.StatusInternalServerError, "internal_server_error.tmpl", models.Page{Title: " | 500"})
 	} else {
-		c.HTML(http.StatusOK, "blog.tmpl", posts)
+		c.HTML(http.StatusOK, "blog.tmpl", struct {
+			Posts []models.BlogPost
+			Title string
+		}{Posts: *posts, Title: " | blog"})
 	}
 }
 
 func RenderIndividualBlogPost(c *gin.Context) {
 	bp := GetBlogPostById(c.Param("url"))
 	if bp == nil {
-		c.HTML(http.StatusNotFound, "not_found.tmpl", gin.H{})
+		c.HTML(http.StatusNotFound, "not_found.tmpl", models.Page{Title: " | 404"})
 	} else {
+		// Blog posts handle the title themselves
 		c.HTML(http.StatusOK, "blog_post.tmpl", struct {
 			Post    *models.BlogPost
 			Captcha [2]int
