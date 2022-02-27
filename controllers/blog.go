@@ -154,6 +154,11 @@ func GetNumberOfRecentPosts(c *gin.Context) uint {
 	return recentPosters[c.ClientIP()]
 }
 
+func DeleteBlogPostById(id string) bool {
+	err := db.Model(&models.BlogPost{}).Delete(&models.BlogPost{Url: id}).Error
+	return err == nil
+}
+
 func GetAllBlogPosts() *[]models.BlogPost {
 	var posts []models.BlogPost
 	// Select title, date, and url fields from the blog post records an store them in posts.
