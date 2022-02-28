@@ -76,7 +76,7 @@ func RenderBlogPage(c *gin.Context) {
 func RenderIndividualBlogPost(c *gin.Context) {
 	bp := GetBlogPostById(c.Param("url"))
 	if bp == nil {
-		c.HTML(http.StatusNotFound, "not_found.tmpl", models.Page{Title: " | 404"})
+		c.HTML(http.StatusNotFound, "not_found.tmpl", models.Page{Title: "404"})
 	} else {
 		// Blog posts handle the title themselves
 		c.HTML(http.StatusOK, "blog_post.tmpl", struct {
