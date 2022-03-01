@@ -125,7 +125,8 @@ func CreateComment(c *gin.Context) {
 		c.Request.Form.Get("content"),
 		c.Request.Form.Get("url"),
 		c.Request.Form.Get("captcha")}
-	if len(a[1]) > 180 && len(*GetCommentsByContent(a[1], a[2])) > 0 {
+	// If the length of the comment is great enough, and the comment already exists we can safely assume it is spam.
+	if len(a[1]) > 20 && len(*GetCommentsByContent(a[1], a[2])) > 0 {
 		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
 		return
 	}
