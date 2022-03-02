@@ -96,5 +96,6 @@ func CreatePost(c *gin.Context) {
 	c.HTML(http.StatusOK, "post_success.tmpl", struct {
 		Url     string
 		Success bool
-	}{Url: f.Get("url"), Success: b})
+		Title   string
+	}{Url: f.Get("url"), Success: b, Title: " | post attempt"})
 }

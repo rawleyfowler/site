@@ -118,7 +118,7 @@ a:hover:after {
 	margin: 12px;
 }
 
-.subtext {
+.subtext, .sub-text {
 	font-size: clamp(0.65em, 0.72em, 0.8em);
 }
 
