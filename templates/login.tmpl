@@ -1,0 +1,8 @@
+{{ template "header.tmpl" . }}
+<h2>Admin Login</h2>
+<form action="/admin/login" method="POST">
+	<input type="text" name="username" placeholder="username" />
+	<input type="password" name="password" placeholder="password" />
+	<button type="submit">Login</button>
+</form>
+{{ template "footer.tmpl" . }}

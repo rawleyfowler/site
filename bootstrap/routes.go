@@ -18,38 +18,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
-	"net/http"
-	"strings"
-
 	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/controllers"
+	"gitlab.com/rawleyifowler/site-rework/utils"
 )
 
 // Initializes all routes from the controller package
 func InitializeRoutes(router *gin.Engine) {
-	router.NoRoute(ServePage("not_found.tmpl"))
+	router.NoRoute(utils.ServePage("not_found.tmpl"))
 	blogGroup := router.Group("/blog")
 	controllers.RegisterBlogGroup(blogGroup)
-	router.GET("/", ServePage("index.tmpl"))
-	router.GET("/resume", ServePage("resume.tmpl"))
-	router.GET("/contact", ServePage("contact.tmpl"))
-}
-
-// Returns a handler function to serve a page based on the template that is inputted
-func ServePage(temp string) gin.HandlerFunc {
-	title := strings.Split(temp, ".")[0]
-	if title == "index" {
-		// Index is the home page so we don't care
-		title = ""
-	} else {
-		// Else title it accordingly
-		title = " | " + title
-	}
-	return func(c *gin.Context) {
-		c.HTML(
-			http.StatusOK,
-			temp,
-			struct{ Title string }{Title: title},
-		)
-	}
+	adminGroup := router.Group("/admin")
+	controllers.RegisterAdminGroup(adminGroup)
+	router.GET("/", utils.ServePage("index.tmpl"))
+	router.GET("/resume", utils.ServePage("resume.tmpl"))
+	router.GET("/contact", utils.ServePage("contact.tmpl"))
 }

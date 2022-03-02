@@ -1,0 +1,10 @@
+{{ template "header.tmpl" . }}
+<h2>Create post</h2>
+<form action="/admin/post" method="POST">
+	<input type="text" placeholder="url" name="url" />
+	<input type="text" placeholder="title" name="title" />
+	<textarea placeholder="post" name="content" />
+	<button type="submit">Make post</button>
+	<button type="clear">Clear form</button>
+</form>
+{{ template "footer.tmpl" . }}

@@ -4,3 +4,4 @@ main
 dsn
 *.pem
 api_key.pem
+admin_hash.pem

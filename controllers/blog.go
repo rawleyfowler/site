@@ -16,8 +16,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -34,7 +32,6 @@ type CommentDto struct {
 
 var (
 	db            *gorm.DB
-	apiKey        string
 	recentPosters map[string]uint
 	captchaVals   [2]int
 )
@@ -44,8 +41,6 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	recentPosters = make(map[string]uint)
 	// Load dsn and initialize database
 	dsn := utils.LoadDSN("dsn")
-	// Load and initialize api key
-	apiKey = utils.LoadApiKey("api_key.pem")
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -54,7 +49,7 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	utils.PerformMigrations(db)
 	r.GET("/", RenderBlogPage)
 	r.GET("/post/:url", RenderIndividualBlogPost)
-	r.POST("/post", CreateBlogPost)
+	r.POST("/post")
 	r.POST("/post/comment", CreateComment)
 	// Clear the commenters cache every 15 minutes
 	go utils.TimedClearMap(&recentPosters, 180000*5)
@@ -86,40 +81,9 @@ func RenderIndividualBlogPost(c *gin.Context) {
 	}
 }
 
-func CreateBlogPost(c *gin.Context) {
-	reqKey, err := c.Request.Cookie("APK")
-	if err != nil {
-		c.Status(http.StatusForbidden)
-		return
-	}
-	if reqKey.Value != apiKey {
-		c.Status(http.StatusForbidden)
-		return
-	}
-	raw, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		c.Status(http.StatusNotAcceptable)
-		return
-	}
-	var data models.BlogPost
-	// Write the data from the request to the data variable
-	if json.Unmarshal([]byte(raw), &data) != nil {
-		c.Status(http.StatusNotAcceptable)
-		return
-	}
-	// Create the blog post in the database
-	err = db.Create(&data).Error
-	if err != nil {
-		c.JSON(http.StatusNotAcceptable, "{ \"error\": "+err.Error()+" }")
-	} else {
-		c.Status(http.StatusAccepted)
-	}
-}
-
 func CreateComment(c *gin.Context) {
 	if c.Request.ParseForm() != nil {
-		c.Status(http.StatusNotAcceptable)
-		return
+		c.AbortWithStatus(http.StatusNotAcceptable)
 	}
 	a := []string{c.Request.Form.Get("author"),
 		c.Request.Form.Get("content"),
@@ -128,7 +92,7 @@ func CreateComment(c *gin.Context) {
 	// If the length of the comment is great enough, and the comment already exists we can safely assume it is spam.
 	if len(a[1]) > 20 && len(*GetCommentsByContent(a[1], a[2])) > 0 {
 		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
-		return
+		c.Abort()
 	}
 	i, err := strconv.ParseInt(a[3], 10, 32)
 	if err != nil || int(i) != (captchaVals[0]+captchaVals[1]) {
@@ -158,6 +122,11 @@ func CreateComment(c *gin.Context) {
 
 func GetNumberOfRecentPosts(c *gin.Context) uint {
 	return recentPosters[c.ClientIP()]
+}
+
+func AddBlogPost(bp *models.BlogPost) bool {
+	err := db.Create(bp).Error
+	return err == nil
 }
 
 func DeleteBlogPostById(id string) bool {
