@@ -139,7 +139,7 @@ func GetAllBlogPosts() *[]models.BlogPost {
 	var posts []models.BlogPost
 	// Select title, date, and url fields from the blog post records an store them in posts.
 	// This is so we don't grab the entire blog post when we render them on the overview page. Saves a couple ms.
-	err := db.Model(&models.BlogPost{}).Select("title, date, url").Scan(&posts).Error
+	err := db.Model(&models.BlogPost{}).Select("title, date, url").Order("date DESC").Scan(&posts).Error
 	if err != nil {
 		return nil
 	}
