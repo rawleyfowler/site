@@ -28,3 +28,7 @@ type BlogPost struct {
 	Content  string    `json:"content"`
 	Comments []Comment `gorm:"foreignKey:AssociatedPost;references:Url;type:varchar(191)"`
 }
+
+func (b BlogPost) Equals(m *BlogPost) bool {
+	return b.Url == m.Url
+}

@@ -72,6 +72,7 @@ func RenderIndividualBlogPost(c *gin.Context) {
 	bp := GetBlogPostById(c.Param("url"))
 	if bp == nil {
 		c.HTML(http.StatusNotFound, "not_found.tmpl", models.Page{Title: "404"})
+		return
 	} else {
 		// Blog posts handle the title themselves
 		c.HTML(http.StatusOK, "blog_post.tmpl", struct {
@@ -147,9 +148,9 @@ func GetAllBlogPosts() *[]models.BlogPost {
 }
 
 func GetBlogPostById(id string) *models.BlogPost {
-	var post models.BlogPost
+	var post models.BlogPost = models.BlogPost{}
 	err := db.Model(&post).Where(&models.BlogPost{Url: id}).Find(&post).Error
-	if err != nil {
+	if err != nil || post.Equals(&models.BlogPost{}) {
 		return nil
 	}
 	// TODO: Figure out gorm joins!
