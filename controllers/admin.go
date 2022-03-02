@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,19 +12,25 @@ import (
 
 var (
 	key        string            = utils.LoadApiKey("api_key.pem")
-	admin_hash string            = utils.LoadAdminHash("admin_hash.pem")
+	admin_hash [32]byte          = utils.LoadAdminHash("admin_hash.pem")
 	att        map[string]uint32 = make(map[string]uint32)
 )
 
 // Ensure is logged in
 func AdminOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var status uint = http.StatusOK
 		k, err := c.Cookie("admin_key")
 		if err != nil {
-			c.Redirect(http.StatusPermanentRedirect, "/admin/")
+			status = http.StatusForbidden
 		}
-		if k == key {
+		fmt.Println(k)
+		if k == key && status == http.StatusOK {
 			c.Next()
+		} else {
+			c.HTML(int(status), "forbidden.tmpl", models.Page{Title: " | forbidden"})
+			c.Abort()
+			return
 		}
 	}
 }
@@ -37,41 +44,48 @@ func RegisterAdminGroup(r *gin.RouterGroup) {
 
 func HandleLogin(c *gin.Context) {
 	if att[c.ClientIP()] > 5 {
-		c.Redirect(http.StatusPermanentRedirect, "/admin/")
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+		return
 	}
 	err := c.Request.ParseForm()
 	if err != nil {
-		c.Redirect(http.StatusPermanentRedirect, "/admin/")
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+		return
 	}
 	f := c.Request.Form
 	for _, v := range []string{"username", "password"} {
 		if !f.Has(v) {
 			c.AbortWithStatus(http.StatusNotAcceptable)
+			return
 		}
 	}
 	str := f.Get("username") + f.Get("password")
-	s := sha256.New()
-	s.Sum([]byte(str))
-	var h []byte
-	s.Write(h)
-	if string(h) == admin_hash {
-		c.SetCookie("admin_key", key, 1, "/", "rawley.xyz", true, true)
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/post")
+	s := sha256.Sum256([]byte(str))
+	var success bool
+	if s == admin_hash {
+		c.SetCookie("admin_key", key, 3600, "/", "rawley.xyz", false, true)
+		success = true
 	} else {
 		att[c.ClientIP()]++
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/")
+		success = false
 	}
+	c.HTML(http.StatusOK, "admin_success_redirect.tmpl", struct {
+		Success bool
+		Title   string
+	}{Success: success, Title: "login"})
 }
 
 func CreatePost(c *gin.Context) {
 	err := c.Request.ParseForm()
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 	f := c.Request.Form
 	for _, v := range []string{"title", "content", "url"} {
 		if !f.Has(v) {
 			c.AbortWithStatus(http.StatusNotAcceptable)
+			return
 		}
 	}
 	b := AddBlogPost(&models.BlogPost{
@@ -79,9 +93,8 @@ func CreatePost(c *gin.Context) {
 		Content: f.Get("content"),
 		Url:     f.Get("url"),
 	})
-	if b {
-		c.Redirect(http.StatusTemporaryRedirect, "/blog/post/"+f.Get("url"))
-	} else {
-		c.Redirect(http.StatusTemporaryRedirect, "/admin/post")
-	}
+	c.HTML(http.StatusOK, "post_success.tmpl", struct {
+		Url     string
+		Success bool
+	}{Url: f.Get("url"), Success: b})
 }

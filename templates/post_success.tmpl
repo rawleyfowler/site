@@ -1,0 +1,11 @@
+{{ template "header.tmpl" . }}
+{{ if .Success }}
+	<h2>Post created successfully!</h2>
+	<p>Click <a href="/blog/post/{{ .Url }}">here</a> to view the post.</p>
+	<p>Click <a href="/admin/post">here</a> to return to the posting page.</p>
+{{ else }}
+	<h2>Post failed to be created...</h2>
+	<p>Click <a href="/admin/post">here</a> to return to the posting page.</p>
+{{ end }}
+</body>
+</html>

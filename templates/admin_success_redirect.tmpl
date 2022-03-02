@@ -1,0 +1,10 @@
+{{ template "header.tmpl" . }}
+{{ if .Success }}
+	<h2>Login was <u>successful</u>!</h2>
+	<p>Click <a href="/admin/post">here</a> to go to the post creation area.</p>
+{{ else }}
+	<h2>Login was <u>not</u> successful!</h2>
+	<p>Click <a href="/admin/">here</a> to return to the login page to try again.</p>
+{{ end }}
+</body>
+</html>

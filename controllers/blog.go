@@ -84,6 +84,7 @@ func RenderIndividualBlogPost(c *gin.Context) {
 func CreateComment(c *gin.Context) {
 	if c.Request.ParseForm() != nil {
 		c.AbortWithStatus(http.StatusNotAcceptable)
+		return
 	}
 	a := []string{c.Request.Form.Get("author"),
 		c.Request.Form.Get("content"),
@@ -92,7 +93,7 @@ func CreateComment(c *gin.Context) {
 	// If the length of the comment is great enough, and the comment already exists we can safely assume it is spam.
 	if len(a[1]) > 20 && len(*GetCommentsByContent(a[1], a[2])) > 0 {
 		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
-		c.Abort()
+		return
 	}
 	i, err := strconv.ParseInt(a[3], 10, 32)
 	if err != nil || int(i) != (captchaVals[0]+captchaVals[1]) {
