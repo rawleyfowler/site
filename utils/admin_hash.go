@@ -8,7 +8,7 @@ import (
 func LoadAdminHash(path string) [32]byte {
 	file, err := os.Open(path)
 	if err != nil {
-		panic("Could not find DSN for database...")
+		panic("Could not find admin hash...")
 	}
 	defer file.Close()
 	reader := bufio.NewScanner(file)
