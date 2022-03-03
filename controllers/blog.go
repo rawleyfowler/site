@@ -118,7 +118,7 @@ func CreateComment(c *gin.Context) {
 	}
 	db.Create(&comment)
 	// Something was wrong with c.ClientIP() with trusted?? Weird.
-	recentPosters[c.Request.Header.Get("X-Forwarded-For")]++
+	recentPosters[c.ClientIP()]++
 	// Pass the associated post to the template to add to the href
 	c.HTML(http.StatusOK, "comment_post.tmpl", CommentDto{Url: comment.AssociatedPost})
 }

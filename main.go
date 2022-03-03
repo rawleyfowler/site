@@ -39,6 +39,7 @@ func main() {
 	router.SetFuncMap(funcMap)
 	// This needs to change because of RCCTL in OpenBSD, not sure if you can use a ksh variable as path in Gin but i'll test
 	router.LoadHTMLGlob("templates/*.tmpl")
+	router.TrustedPlatform = "X-Real-Ip"
 	bootstrap.InitializeRoutes(router)
 	router.Run(":8080")
 }
