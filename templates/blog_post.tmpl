@@ -27,9 +27,9 @@
 {{ end }}
 <h4>Leave a comment!</h4>
 <form method="POST" action="/blog/post/comment">
-	<input type="text" required pattern=".{3,}" title="Author name must be atleast 3 chars." placeholder="Name" maxlength="50" name="author"/>	
-	<input type="field" required pattern=".{15,}" title="Your comment must be atleast 15 chars." placeholder="Comment" maxlength="500" name="content" />
-	<input type="text" required pattern="^\d+" title="The captcha must be a number." placeholder="What is {{ index .Captcha 0 }} + {{ index .Captcha 1 }}?" maxlength="10" name="captcha" />
+	<input type="text" required pattern=".{3,}" title="Author name must be atleast 3 chars" placeholder="Name" maxlength="50" name="author"/>	
+	<input type="field" required pattern=".{15,}" title="Your comment must be atleast 15 chars" placeholder="Comment" maxlength="500" name="content" />
+	<input type="text" class="captcha" required pattern="^\d+" title="The captcha must be a number" placeholder="What is {{ index .Captcha 0 }} plus {{ index .Captcha 1 }}" maxlength="10" name="captcha" />
 	<input type="text" required style="display: none;" name="url" value="{{ .Post.Url }}" readonly />
 	<button type="submit">Post</button>
 </form>

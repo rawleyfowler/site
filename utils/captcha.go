@@ -12,6 +12,6 @@ func GenerateCaptchaValues() (int, int) {
 func UpdateCaptcha(captcha *[2]int) {
 	for {
 		captcha[0], captcha[1] = GenerateCaptchaValues()
-		time.Sleep(5 * time.Minute)
+		time.Sleep(30 * time.Minute)
 	}
 }

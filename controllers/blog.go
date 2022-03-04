@@ -52,7 +52,7 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	r.POST("/post")
 	r.POST("/post/comment", CreateComment)
 	// Clear the commenters cache every 15 minutes
-	go utils.TimedClearMap(&recentPosters, 180000*5)
+	go utils.TimedClearMap(&recentPosters, 320000*5)
 	go utils.UpdateCaptcha(&captchaVals)
 }
 
@@ -101,7 +101,7 @@ func CreateComment(c *gin.Context) {
 		c.HTML(http.StatusNotAcceptable, "comment_post_failed.tmpl", CommentDto{Url: a[2]})
 		return
 	}
-	if GetNumberOfRecentPosts(c) > 3 {
+	if GetNumberOfRecentPosts(c) >= 2 {
 		c.HTML(http.StatusNotAcceptable, "comment_post_spam.tmpl", CommentDto{Url: a[2]})
 		return
 	}
