@@ -169,4 +169,10 @@ a:hover:after {
 		color: #fafafa;
 		background-color: #242124;
 	}
+	body * {
+		color: #fafafa;
+	}
+	body > * {
+		color: #fafafa;
+	}
 }
