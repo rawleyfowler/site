@@ -22,11 +22,11 @@ import (
 
 type BlogPost struct {
 	gorm.Model
-	Url      string    `json:"url" gorm:"primaryKey"`
-	Title    string    `json:"title" gorm:"unique"`
-	Date     string    `json:"date" gorm:"default:NOW()"`
-	Content  string    `json:"content"`
-	Comments []Comment `gorm:"foreignKey:AssociatedPost;references:Url;type:varchar(191)"`
+	Url     string `json:"url" gorm:"primaryKey"`
+	Title   string `json:"title" gorm:"unique"`
+	Date    string `json:"date" gorm:"default:NOW()"`
+	Content string `json:"content"`
+	Captcha [2]int `gorm:"-"`
 }
 
 func (b BlogPost) Equals(m *BlogPost) bool {

@@ -164,13 +164,9 @@ a:hover:after {
 	content: "' ";
 }
 
-.comment {
-	margin-top: 3px;
-	margin-bottom: 3px;
-	border: 2px solid #454545;
-}
-
-.comment-body {
-	background-color: rgba(222, 222, 222, 0.5);
-	word-wrap: break-word;
+@media (prefers-color-scheme: dark) {
+	body {
+		color: #fafafa;
+		background-color: #242124;
+	}
 }

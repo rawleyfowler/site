@@ -18,20 +18,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
-	"net/http"
-	"strings"
-
-	"github.com/gin-gonic/gin"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func ServePage(t string) gin.HandlerFunc {
-	title := strings.Split(t, ".")[0]
-	if title == "index" {
-		title = ""
-	} else {
-		title = " | " + title
+func InitializeDatabase(dsn string) *gorm.DB {
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("Failed to open database with dsn -> " + dsn)
 	}
-	return func(c *gin.Context) {
-		c.HTML(http.StatusOK, t, struct{ Title string }{Title: title})
-	}
+	return db
 }

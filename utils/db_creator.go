@@ -1,4 +1,4 @@
-package models
+package utils
 
 /*
 Copyright (C) 2022 Rawley Fowler
@@ -16,15 +16,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
+
 import (
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-type Comment struct {
-	gorm.Model
-	Id             uint   `json:"id" gorm:"primaryKey, AUTO_INCREMENT"`
-	Date           string `json:"date" gorm:"default:NOW()"`
-	Author         string `json:"author" form:"author" gorm:"type:varchar(50)"`
-	Content        string `json:"content" form:"content" gorm:"type:varchar(500)"`
-	AssociatedPost string
+func CreateDatabase(dsn string) (*gorm.DB, error) {
+	var err error
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }
