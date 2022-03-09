@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
+
 import (
 	"bufio"
 	"os"
@@ -23,10 +24,10 @@ import (
 
 func LoadApiKey(path string) string {
 	file, err := os.Open(path)
-	defer file.Close()
 	if err != nil {
-		panic("Could not find file: " + path)
+		panic("Could not find DSN for database...")
 	}
+	defer file.Close()
 	reader := bufio.NewScanner(file)
 	if reader.Scan() {
 		return reader.Text()

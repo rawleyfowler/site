@@ -1,6 +1,16 @@
-{{ template "header.tmpl" . }}
+<html>
+	<head>
+		<meta lang="en">
+		<meta charset="UTF-8">
+		<meta name="keywords" content="blog rawley-fowler rawleyportfolio rawleyxyz rawleyfowler RF rawley fowler Rawley Fowler portfolio RawleyFowler RawleyXYZ rawleyXYZ RawleyXYZ">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="/static/index.css" rel="stylesheet" type="text/css">
+		<title>rawley.xyz | blog</title>
+	</head>
+	<body>
+	{{ template "nav.tmpl" . }}
 <h2>Blog posts</h2>
-{{ range $val := .Posts }}
+{{ range $val := . }}
 	<div class="post-record">
 		<div>
 			<a class="post-record-title" href="/blog/post/{{ $val.Url }}">{{ $val.Title }}</a>

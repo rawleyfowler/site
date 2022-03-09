@@ -1,11 +1,20 @@
-{{ template "header.tmpl" . }}
-{{ if .Success }}
-	<h2>Post created successfully!</h2>
-	<p>Click <a href="/blog/post/{{ .Url }}">here</a> to view the post.</p>
-	<p>Click <a href="/admin/post">here</a> to return to the posting page.</p>
+<html>
+<head>
+		<meta lang="en">
+		<meta charset="UTF-8">
+		<meta name="keywords" content="blog resume rawley-fowler rawleyportfolio rawleyxyz rawleyfowler RF rawley fowler Rawley Fowler portfolio RawleyFowler RawleyXYZ rawleyXYZ RawleyXYZ">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="/static/index.css" rel="stylesheet" type="text/css">
+		<title>forbidden</title>
+</head>
+<body>
+{{ template "nav.tmpl" . }}
+{{ if . }}
+	<h2>Operation performced successfuly!</h2>
+	<p>Click <a href="/admin/post">here</a> to return to the management page.</p>
 {{ else }}
-	<h2>Post failed to be created...</h2>
-	<p>Click <a href="/admin/post">here</a> to return to the posting page.</p>
+	<h2>Operation failed to perform...</h2>
+	<p>Click <a href="/admin/post">here</a> to return to the management page.</p>
 {{ end }}
 </body>
 </html>

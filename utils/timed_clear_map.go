@@ -1,4 +1,5 @@
 package utils
+
 /*
 Copyright (C) 2022 Rawley Fowler
 
@@ -15,13 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
-import (
-	"gitlab.com/rawleyifowler/site-rework/models"
-	"gorm.io/gorm"
-)
 
-// Performs migrations of all models
-func PerformMigrations(db *gorm.DB) {
-	db.AutoMigrate(&models.BlogPost{})
-	db.AutoMigrate(&models.Comment{})
+import "time"
+
+func TimeClearMap(m map[string]int64, t int64) {
+	time.Sleep(time.Duration(t) * time.Millisecond)
+	for k := range m {
+		if m[k] < time.Now().UnixMilli()+t {
+			delete(m, k)
+		}
+	}
 }

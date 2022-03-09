@@ -1,10 +1,26 @@
-{{ template "header.tmpl" . }}
+<html>
+<head>
+		<meta lang="en">
+		<meta charset="UTF-8">
+		<meta name="keywords" content="blog resume rawley-fowler rawleyportfolio rawleyxyz rawleyfowler RF rawley fowler Rawley Fowler portfolio RawleyFowler RawleyXYZ rawleyXYZ RawleyXYZ">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="/static/index.css" rel="stylesheet" type="text/css">
+		<title>crud post</title>
+</head>
+<body>
+{{ template "nav.tmpl" . }}
 <h2>Create post</h2>
 <form action="/admin/post" method="POST">
-	<input type="text" placeholder="url" name="url" />
+	<input required type="text" placeholder="url" name="url" />
 	<input type="text" placeholder="title" name="title" />
 	<textarea placeholder="post" name="content"></textarea> 
+	<select required name="op">
+		<option value="create">create</option>
+		<option value="update">update</option>
+		<option value="delete">delete</option>
+	</select>
 	<button type="submit">Make post</button>
 	<button type="clear">Clear form</button>
 </form>
-{{ template "footer.tmpl" . }}
+</body>
+</html>

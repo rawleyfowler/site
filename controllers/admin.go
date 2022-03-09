@@ -1,101 +1,179 @@
 package controllers
 
+/*
+Copyright (C) 2022 Rawley Fowler
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
+*/
+
 import (
-	"crypto/sha256"
-	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/rawleyifowler/site-rework/models"
+	"gitlab.com/rawleyifowler/site-rework/repos"
 	"gitlab.com/rawleyifowler/site-rework/utils"
 )
 
 var (
-	key        string            = utils.LoadApiKey("api_key.pem")
-	admin_hash [32]byte          = utils.LoadAdminHash("admin_hash.pem")
-	att        map[string]uint32 = make(map[string]uint32)
+	api_key string = utils.LoadApiKey("api_key.pem")
 )
 
-// Ensure is logged in
-func AdminOnly() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var status uint = http.StatusOK
-		k, err := c.Cookie("admin_key")
-		if err != nil {
-			status = http.StatusForbidden
-		}
-		fmt.Println(k)
-		if k == key && status == http.StatusOK {
-			c.Next()
-		} else {
-			c.HTML(int(status), "forbidden.tmpl", models.Page{Title: " | forbidden"})
-			c.Abort()
-			return
-		}
-	}
+type AdminController struct {
+	Repository        *repos.AdminRepo
+	BlogRepository    *repos.BlogRepo
+	ActiveLogins      map[string]int64
+	LoginAttemptsByIp map[string]uint
+}
+
+func NewAdminController(r *repos.AdminRepo) *AdminController {
+	var a AdminController
+	a.Repository = r
+	a.ActiveLogins = map[string]int64{}
+	a.LoginAttemptsByIp = map[string]uint{}
+	go utils.TimeClearMap(a.ActiveLogins, 850)
+	return &a
 }
 
 func RegisterAdminGroup(r *gin.RouterGroup) {
+	a := NewAdminController(repos.NewAdminRepo("dsn"))
+	r.Use(a.UserBannedMiddleware)
 	r.GET("/", utils.ServePage("login.tmpl"))
-	r.POST("/login", HandleLogin)
-	r.GET("/post", AdminOnly(), utils.ServePage("create_post.tmpl"))
-	r.POST("/post", AdminOnly(), CreatePost)
+	r.POST("/login", a.AdminLogin)
+	r.GET("/post", a.AuthMiddleware, utils.ServePage("create_post.tmpl"))
+	r.POST("/post", a.AuthMiddleware, a.CRUDPost)
+	r.POST("/user", a.CreateAdmin)
 }
 
-func HandleLogin(c *gin.Context) {
-	if att[c.ClientIP()] > 5 {
-		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+func (a *AdminController) AuthMiddleware(c *gin.Context) {
+	cookie, err := c.Request.Cookie("token")
+	if err != nil {
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", &gin.H{})
+		c.Abort()
 		return
 	}
+	if a.ActiveLogins[cookie.Value] == 0 {
+		c.HTML(http.StatusForbidden, "session_revoked.tmpl", &gin.H{})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
+func (a *AdminController) UserBannedMiddleware(c *gin.Context) {
+	if a.IpIsBanned(c.ClientIP()) {
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", &gin.H{})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
+func (a *AdminController) IpIsBanned(ip string) bool {
+	return a.LoginAttemptsByIp[ip] >= 3
+}
+
+func (a *AdminController) AdminLogin(c *gin.Context) {
 	err := c.Request.ParseForm()
 	if err != nil {
-		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", &gin.H{})
+		a.LoginAttemptsByIp[c.ClientIP()]++
 		return
 	}
 	f := c.Request.Form
-	for _, v := range []string{"username", "password"} {
-		if !f.Has(v) {
-			c.AbortWithStatus(http.StatusNotAcceptable)
-			return
-		}
+	if !f.Has("username") ||
+		!f.Has("password") {
+		c.HTML(http.StatusNotAcceptable, "admin_success_redirect.tmpl", false)
+		a.LoginAttemptsByIp[c.ClientIP()]++
+		return
 	}
-	str := f.Get("username") + f.Get("password")
-	s := sha256.Sum256([]byte(str))
-	var success bool
-	if s == admin_hash {
-		c.SetCookie("admin_key", key, 3600, "/", "rawley.xyz", false, true)
-		success = true
-	} else {
-		att[c.ClientIP()]++
-		success = false
+	ad, err := a.Repository.GetAdminByCredentials(f.Get("username"), f.Get("password"))
+	if err != nil ||
+		ad == nil {
+		c.HTML(http.StatusNotAcceptable, "admin_success_redirect.tmpl", false)
+		a.LoginAttemptsByIp[c.ClientIP()]++
+		return
 	}
-	c.HTML(http.StatusOK, "admin_success_redirect.tmpl", struct {
-		Success bool
-		Title   string
-	}{Success: success, Title: "login"})
+	a.ActiveLogins[ad.Token] = time.Now().UnixMilli() + (3600 * 1000)
+	c.SetCookie("token", ad.Token, 3600*1000, "/", "rawley.xyz", true, true)
+	c.HTML(http.StatusAccepted, "admin_success_redirect.tmpl", true)
 }
 
-func CreatePost(c *gin.Context) {
+func (a *AdminController) CRUDPost(c *gin.Context) {
 	err := c.Request.ParseForm()
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
 		return
 	}
 	f := c.Request.Form
-	for _, v := range []string{"title", "content", "url"} {
-		if !f.Has(v) {
-			c.AbortWithStatus(http.StatusNotAcceptable)
-			return
-		}
+	if f.Get("url") == "" ||
+		f.Get("op") == "" {
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
 	}
-	b := AddBlogPost(&models.BlogPost{
-		Title:   f.Get("title"),
-		Content: f.Get("content"),
+	tempBlogRepo := repos.NewBlogRepo("dsn")
+	tempPost := &models.BlogPost{
 		Url:     f.Get("url"),
-	})
-	c.HTML(http.StatusOK, "post_success.tmpl", struct {
-		Url     string
-		Success bool
-		Title   string
-	}{Url: f.Get("url"), Success: b, Title: " | post attempt"})
+		Content: f.Get("content"),
+		Title:   f.Get("title"),
+	}
+	switch f.Get("op") {
+	case "create":
+		err = tempBlogRepo.CreateBlogPost(tempPost)
+		break
+	case "update":
+		err = tempBlogRepo.UpdateExistingPost(tempPost)
+		break
+	case "delete":
+		err = tempBlogRepo.DeleteExistingPost(tempPost)
+		break
+	default:
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
+	}
+	if err != nil {
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
+	}
+	c.HTML(http.StatusAccepted, "post_success.tmpl", true)
+}
+
+func (a *AdminController) CreateAdmin(c *gin.Context) {
+	err := c.Request.ParseForm()
+	if err != nil {
+		c.HTML(http.StatusNotAcceptable, "forbidden.tmpl", &gin.H{})
+		return
+	}
+	var at models.Administrator
+	f := c.Request.Form
+	if !f.Has("password") ||
+		!f.Has("username") ||
+		!f.Has("api_key") {
+		c.HTML(http.StatusBadRequest, "forbidden.tmpl", &gin.H{})
+		return
+	}
+	at.Username = f.Get("username")
+	at.Password = f.Get("password")
+	if f.Get("api_key") != api_key {
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", &gin.H{})
+		return
+	}
+	err = a.Repository.CreateAdmin(&at)
+	if err != nil {
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", &gin.H{})
+		return
+	}
+	c.HTML(http.StatusAccepted, "post_success.tmpl", true)
 }
