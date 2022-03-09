@@ -174,4 +174,7 @@ a:hover:after {
 	body > * {
 		color: #fafafa;
 	}
+	a::after {
+		background-color: #bd93f9;
+	}
 }
