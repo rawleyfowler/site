@@ -14,18 +14,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
-
+/* Color Scheme from here: https://draculatheme.com */
 html {
 	max-width: 100vw;
 	min-height: 100vh;
 }
 
 body {
-	color: #242124;
+	color: #282a36;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	-webkit-font-smoothing: antialias;
 	-moz-osx-font-smoothing: grayscale;
-	background-color: #fafafa;
+	background-color: #f8f8f2;
 	font-size: calc(12px + 0.33vw);
 	margin: auto;
 	padding: 1.3em;
@@ -71,8 +71,8 @@ li {
 }
 
 span {
-	background-color: rgba(25, 25, 25, 0.6);
-	color: #50f77b;
+	background-color: #6272a4;
+	color: #50fa7b;
 	padding-left: 2px;
 	padding-right: 2px;
 }
@@ -92,7 +92,7 @@ a::after {
 	right: 0;
 	bottom: 0;
 	transition: 102ms cubic-bezier(0, 0.86, 0.1, 1);
-	background-color: rgba(255, 222, 0);
+	background-color: #ffb86c;
 }
 
 a:hover:after {
@@ -165,14 +165,14 @@ a:hover:after {
 
 @media (prefers-color-scheme: dark) {
 	body {
-		color: #fafafa;
-		background-color: #242124;
+		color: #f8f8f2;
+		background-color: #282a36;
 	}
 	body * {
-		color: #fafafa;
+		color: #f8f8f2;
 	}
 	body > * {
-		color: #fafafa;
+		color: #f8f8f2;
 	}
 	a::after {
 		background-color: #bd93f9;
