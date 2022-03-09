@@ -71,7 +71,7 @@ func (b *BlogRepo) GetBlogByUrl(url string) (*models.BlogPost, error) {
 
 func (b *BlogRepo) GetAllBlogPosts() (*[]models.BlogPost, error) {
 	posts := new([]models.BlogPost)
-	err := b.DB.Table("blog_posts").Scan(posts).Error
+	err := b.DB.Table("blog_posts").Order("date desc").Scan(posts).Error
 	if err != nil {
 		return nil, errors.New("Could not load all posts from database")
 	}
