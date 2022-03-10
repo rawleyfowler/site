@@ -81,6 +81,7 @@ a {
 	text-decoration: none;
 	position: relative;
 	transition: 100ms linear;
+	color: inherit;
 }
 
 a::after {
