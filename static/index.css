@@ -70,13 +70,6 @@ li {
 	padding-bottom: 6px;
 }
 
-span {
-	background-color: #6272a4;
-	color: #50fa7b;
-	padding-left: 2px;
-	padding-right: 2px;
-}
-
 a {
 	text-decoration: none;
 	position: relative;
@@ -162,6 +155,14 @@ a:hover:after {
 
 .skill-keywords > i::after {
 	content: "' ";
+}
+
+/* For code snippets */
+.code {
+	background-color: #44475a;
+	color: #50fa7b;
+	padding: 3px;
+	font-family: monospace;
 }
 
 @media (prefers-color-scheme: dark) {
