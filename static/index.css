@@ -93,7 +93,7 @@ a::after {
 	right: 0;
 	bottom: 0;
 	transition: 102ms cubic-bezier(0, 0.86, 0.1, 1);
-	background-color: #efff3a;
+	background-color: #ece000;
 }
 
 a:hover:after {
