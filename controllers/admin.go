@@ -22,7 +22,7 @@ func AdminOnly() gin.HandlerFunc {
 		var status uint = http.StatusOK
 		k, err := c.Cookie("admin_key")
 		if err != nil {
-			status = http.StatusForbidden
+			status = http.StatusUnauthorized
 		}
 		fmt.Println(k)
 		if k == key && status == http.StatusOK {
@@ -44,12 +44,12 @@ func RegisterAdminGroup(r *gin.RouterGroup) {
 
 func HandleLogin(c *gin.Context) {
 	if att[c.ClientIP()] > 5 {
-		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+		c.HTML(http.StatusUnauthorized, "forbidden.tmpl", models.Page{Title: " | forbidden"})
 		return
 	}
 	err := c.Request.ParseForm()
 	if err != nil {
-		c.HTML(http.StatusForbidden, "forbidden.tmpl", models.Page{Title: " | forbidden"})
+		c.HTML(http.StatusUnauthorized, "forbidden.tmpl", models.Page{Title: " | forbidden"})
 		return
 	}
 	f := c.Request.Form
