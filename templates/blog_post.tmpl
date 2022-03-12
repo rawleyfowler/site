@@ -5,33 +5,15 @@
 		<meta name="keywords" content="blog resume rawley-fowler rawleyportfolio rawleyxyz rawleyfowler RF rawley fowler Rawley Fowler portfolio RawleyFowler RawleyXYZ rawleyXYZ RawleyXYZ">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="/static/index.css" rel="stylesheet" type="text/css">
-		<title>{{ .Post.Title }}</title>
+		<title>{{ .Title }}</title>
 </head>
 <body>
 {{ template "nav.tmpl" . }}
 <div>
-	<h2>{{ .Post.Title }}</h2>
-	<div>{{ .Post.Content | UnescapeHTML }}</div>
-<h4>Comments</h4>
-{{ range $comment := .Post.Comments }}
-	<div class="comment">
-		<div>
-			{{ $comment.Author }} at {{ $comment.Date }}
-		</div>
-		<div class="comment-body">
-			{{ $comment.Content }}
-		</div>
-	</div>
-{{ else }}
-	<p>No comments...</p>
-{{ end }}
-<h4>Leave a comment!</h4>
-<form method="POST" action="/blog/post/comment">
-	<input type="text" required pattern=".{3,}" title="Author name must be atleast 3 chars" placeholder="Name" maxlength="50" name="author"/>	
-	<input type="field" required pattern=".{15,}" title="Your comment must be atleast 15 chars" placeholder="Comment" maxlength="500" name="content" />
-	<input type="text" class="captcha" required pattern="^\d+" title="The captcha must be a number" placeholder="What is {{ index .Captcha 0 }} plus {{ index .Captcha 1 }}" maxlength="10" name="captcha" />
-	<input type="text" required style="display: none;" name="url" value="{{ .Post.Url }}" readonly />
-	<button type="submit">Post</button>
-</form>
-</div>
+	<h2>{{ .Title }}</h2>
+	<div>{{ .Content | UnescapeHTML }}</div>
+<hr/>
+<p class="subtext">
+This site used to have comments. Unfortunatley maintaining a comment system that can resist bots, spammers, and other hooligans is quite tiresome. Until I figure out a way to efficiently handle comments, they are disabled. Sorry for the inconvenience.
+</p>
 {{ template "footer_no_banners.tmpl" . }}
