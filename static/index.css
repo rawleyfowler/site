@@ -161,17 +161,22 @@ a:hover:after {
 code {
 	background-color: #44475a;
 	color: #50fa7b;
+	display: block;
 	padding: 3px;
 	font-family: monospace;
+	font-size: 0.9em;
 }
 
-code::before {
+code:before {
 	content: "\A";
+	background-color: none;
 	white-space: pre;
 }
 
-code::after {
+code:after {
 	content: "\A";
+	background-color: none;
+	white-space: pre-line;
 }
 
 @media (prefers-color-scheme: dark) {
