@@ -53,7 +53,7 @@ func (ar *AdminRepo) CreateAdmin(a *models.Administrator) error {
 	}
 	a.Token = uuid.New().String()
 	a.Password = fmt.Sprintf("%x", string(sha256.New().Sum([]byte(a.Password))))
-	err := ar.DB.Table("administrators").Create(a).Error
+	err := ar.DB.Table("administrators").Save(a).Error
 	if err != nil {
 		return err
 	}
