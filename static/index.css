@@ -159,10 +159,8 @@ a:hover:after {
 
 /* For code snippets */
 pre {
-	margin: 0;
 	overflow: auto;
 	padding: 3px;
-	height: fit-content;
 }
 
 code {
