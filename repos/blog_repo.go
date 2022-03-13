@@ -85,7 +85,7 @@ func (b *BlogRepo) UpdateExistingPost(p *models.BlogPost) error {
 	if p.Url == "" {
 		return errors.New("Url must exist to update a blog post record")
 	}
-	err := b.DB.Table("blog_posts").Save(p).Error
+	err := b.DB.Table("blog_posts").Where(&models.BlogPost{Url: p.Url}).Save(p).Error
 	if err != nil {
 		return err
 	}

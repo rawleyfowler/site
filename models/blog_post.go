@@ -22,7 +22,7 @@ import (
 
 type BlogPost struct {
 	gorm.Model
-	Url     string `json:"url" gorm:"primaryKey"`
+	Url     string `json:"url" gorm:"primaryKey unique"`
 	Title   string `json:"title" gorm:"unique"`
 	Date    string `json:"date" gorm:"default:NOW()"`
 	Content string `json:"content"`
