@@ -158,6 +158,11 @@ a:hover:after {
 }
 
 /* For code snippets */
+pre {
+	margin: 0;
+	overflow: auto;
+}
+
 code {
 	background-color: #44475a;
 	color: #50fa7b;
@@ -165,6 +170,7 @@ code {
 	padding: 3px;
 	font-family: monospace;
 	font-size: 0.9em;
+	overflow: auto;
 }
 
 code:before {
