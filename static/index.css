@@ -160,12 +160,11 @@ a:hover:after {
 /* For code snippets */
 pre {
 	overflow: auto;
+	background-color: #44475a;
 	padding: 3px;
-	display: block;
 }
 
 code {
-	background-color: #44475a;
 	color: #50fa7b;
 	font-family: monospace;
 	font-size: 0.9em;
