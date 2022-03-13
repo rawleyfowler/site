@@ -168,6 +168,7 @@ code {
 	color: #50fa7b;
 	font-family: monospace;
 	font-size: 0.9em;
+	margin-left: 3px;
 	overflow: auto;
 }
 
