@@ -161,6 +161,8 @@ a:hover:after {
 pre {
 	margin: 0;
 	overflow: auto;
+	padding: 0;
+	height: fit-content;
 }
 
 code {
