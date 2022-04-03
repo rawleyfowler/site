@@ -183,6 +183,9 @@ code {
 	body > * {
 		color: #f8f8f2;
 	}
+	code {
+		color: #50fa7b;
+	}
 	a::after {
 		background-color: #bd93f9;
 	}
