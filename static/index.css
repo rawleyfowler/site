@@ -102,7 +102,7 @@ a:hover:after {
 .nav-bar {
 	display: flex;
 	flex-direction: row;
-	font-size: 1.1em;
+	font-size: 1.3em;
 	margin-top: calc(12px + 1vh);
 	margin-bottom: 1vw;
 }
@@ -186,4 +186,7 @@ code {
 	a::after {
 		background-color: #bd93f9;
 	}
+    code {
+        color: #50fa7b;
+    }
 }
