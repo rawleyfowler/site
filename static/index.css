@@ -109,6 +109,7 @@ a:hover:after {
 .nav-item {
 	margin-right: 12px;
 	font-size: 1.5em;
+    display: block;
 }
 
 .content-wrapper {
@@ -195,4 +196,10 @@ code {
     code {
         color: #50fa7b;
     }
+}
+
+@media only screen and (max-width: 576px) {
+    .nav-bar {
+        flex-direction: column;
+    }    
 }
