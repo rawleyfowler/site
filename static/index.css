@@ -41,14 +41,14 @@ h1 {
 }
 
 h2 {
-	font-size: (1.6em, 1.6em, 1.8em);
+	font-size: clamp(1.6em, 1.6em, 1.8em);
 	font-weight: 700;
 	margin-bottom: 0;
 }
 
 h3 {
-	font-size: (1.3em, 1.4em, 1.6em);
-	font-weight: 600;
+	font-size: clamp(1.3em, 1.4em, 1.6em);
+	font-weight: 700;
 	margin-bottom: 6px;
 }
 
