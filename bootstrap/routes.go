@@ -33,4 +33,5 @@ func InitializeRoutes(router *gin.Engine) {
 	router.GET("/", utils.ServePage("index.tmpl"))
 	router.GET("/resume", utils.ServePage("resume.tmpl"))
 	router.GET("/contact", utils.ServePage("contact.tmpl"))
+	router.GET("/donate", utils.ServePage("donate.tmpl"))
 }
