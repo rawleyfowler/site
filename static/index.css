@@ -29,11 +29,11 @@ body {
 	font-size: calc(12px + 0.33vw);
 	margin: auto;
 	padding: 1.3em;
-	max-width: clamp(400px, 850px + 3vw, 900px);
+	max-width: clamp(400px, 750px + 3vw, 900px);
 }
 
 h1 { 
-	font-size: 2em; 
+	font-size: 2.1em; 
 	font-weight: 800;
 	margin-bottom: 0;
 	margin-top: 12px;
@@ -41,25 +41,25 @@ h1 {
 }
 
 h2 {
-	font-size: 1.8em;
+	font-size: (1.6em, 1.6em, 1.8em);
 	font-weight: 700;
 	margin-bottom: 0;
 }
 
 h3 {
-	font-size: 1.6em;
+	font-size: (1.3em, 1.4em, 1.6em);
 	font-weight: 600;
 	margin-bottom: 6px;
 }
 
 h4 {
-	font-size: 1.1em;
-	font-weight: 400;
+	font-size: clamp(1.1em, 1.2em, 1.3em);
+	font-weight: bold;
 	margin-bottom: 6px;
 }
 
 p { 
-	font-size: clamp(1em, 1.1em, 1.22em);
+	font-size: clamp(0.9em, 1em, 1.1em);
 	font-weight: 400;
 	line-height: 1.4;
 	max-width: 50em;
