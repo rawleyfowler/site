@@ -41,19 +41,19 @@ h1 {
 }
 
 h2 {
-	font-size: 1.5em;
+	font-size: 1.8em;
 	font-weight: 700;
 	margin-bottom: 0;
 }
 
 h3 {
-	font-size: 1.4em;
+	font-size: 1.6em;
 	font-weight: 600;
 	margin-bottom: 6px;
 }
 
 h4 {
-	font-size: 1.3em;
+	font-size: 1.1em;
 	font-weight: 600;
 	margin-bottom: 6px;
 }
@@ -153,6 +153,11 @@ a:hover:after {
 
 .skill-keywords > i::after {
 	content: "' ";
+}
+
+.wrap {
+    word-wrap: break-word;
+    overflow: wrap;
 }
 
 /* For code snippets */
