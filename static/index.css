@@ -102,12 +102,14 @@ a:hover:after {
 .nav-bar {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-top: calc(12px + 1vh);
-    margin-bottom: 1vw;
+    margin-bottom: 0.66vw;
 }
 
 .nav-item {
     margin-right: 12px;
+    margin-top: 6px;
     font-size: 1.5em;
 }
 
@@ -194,16 +196,5 @@ code {
     }
     code {
         color: #50fa7b;
-    }
-}
-
-@media only screen and (max-width: 576px) {
-    .nav-bar {
-        flex-direction: column;
-
-    }    
-    .nav-item {
-        margin-top: 3px;
-        margin-bottom: 3px;
     }
 }
