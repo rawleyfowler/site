@@ -115,6 +115,16 @@ a:hover:after {
     font-size: 1.4em;
 }
 
+@media only screen and (max-width: 567px) {
+    .nav-bar {
+        justify-content: normal;
+    }
+    .nav-item {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+}
+
 .content-wrapper {
     margin: 12px;
 }
