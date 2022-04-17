@@ -101,6 +101,7 @@ a:hover:after {
 
 .nav-bar {
     display: flex;
+    align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: calc(12px + 1vh);
