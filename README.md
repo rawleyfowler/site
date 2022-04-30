@@ -3,7 +3,7 @@ This is my personal website and blog. It is written entirely in Go and hosted on
 
 ## Contributing
 I will only accept bug fixes. This site is my own, so I will be declining any design oriented or feature requests.
-Issues are always welcome as long as they're technical, issues regarding my blog posts, etc, will be ignored.
+Issues are always welcome as long as they're technical, issues regarding my blog posts, etc, will be ignored. This project only compiles with go version `>=1.17`.
 
 ## Blog
 I try my best to make a blog post every 15 or so days. My blogs content ranges from technical to non-technical; some of it will be informative and some if it will be observatory.
