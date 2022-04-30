@@ -20,8 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 import (
 	"errors"
 
-	"gitlab.com/rawleyifowler/site-rework/models"
-	"gitlab.com/rawleyifowler/site-rework/utils"
+	"github.com/rawleyfowler/rawleydotxyz/models"
+	"github.com/rawleyfowler/rawleydotxyz/utils"
 	"gorm.io/gorm"
 )
 

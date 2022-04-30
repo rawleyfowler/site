@@ -1,4 +1,4 @@
-module gitlab.com/rawleyifowler/site-rework
+module github.com/rawleyfowler/rawleydotxyz
 
 go 1.15
 

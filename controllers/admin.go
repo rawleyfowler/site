@@ -22,9 +22,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/models"
-	"gitlab.com/rawleyifowler/site-rework/repos"
-	"gitlab.com/rawleyifowler/site-rework/utils"
+	"github.com/rawleyfowler/rawleydotxyz/models"
+	"github.com/rawleyfowler/rawleydotxyz/repos"
+	"github.com/rawleyfowler/rawleydotxyz/utils"
 )
 
 var (

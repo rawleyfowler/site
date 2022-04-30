@@ -19,7 +19,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/repos"
+	"github.com/rawleyfowler/rawleydotxyz/repos"
 )
 
 type CommentDto struct {
@@ -52,12 +52,11 @@ func (bc *BlogController) IndexBlogPage(c *gin.Context) {
 }
 
 func (bc *BlogController) IndividualBlogPage(c *gin.Context) {
+	// Using the repository, get the plug that correlates to the url
 	post, err := bc.Repository.GetBlogByUrl(c.Param("url"))
 	if err != nil {
 		c.HTML(http.StatusNotFound, "not_found.tmpl", &gin.H{})
 		return
 	}
-	// TODO: Re implement captcha here. It is already included on the blog post model, though not in the database.
-	// The idea is to generate a captcha for each post, and index them by title. The async service should then update each captcha every hour.
 	c.HTML(http.StatusOK, "blog_post.tmpl", post)
 }

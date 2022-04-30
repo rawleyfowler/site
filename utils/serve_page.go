@@ -24,6 +24,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Serves a static page, based on its name.
+// Returns a handler func that renders a given page.
+// Page input t should always be <Page Name>.tmpl
+// Also sets the title for the page if it allows for dyanmic titles.
+// index.tmpl will have an empty title.
 func ServePage(t string) gin.HandlerFunc {
 	title := strings.Split(t, ".")[0]
 	if title == "index" {

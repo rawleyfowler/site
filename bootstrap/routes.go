@@ -19,17 +19,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/controllers"
-	"gitlab.com/rawleyifowler/site-rework/utils"
+	"github.com/rawleyfowler/rawleydotxyz/controllers"
+	"github.com/rawleyfowler/rawleydotxyz/utils"
 )
 
-// Initializes all routes from the controller package
+// Initializes all routes from the controller package.
+// Uses the ServePage function from utils to generate static route handlers.
 func InitializeRoutes(router *gin.Engine) {
+	// No route will serve the not found page.
 	router.NoRoute(utils.ServePage("not_found.tmpl"))
+	// Router groups for dynamic routing and dynamic pages.
 	blogGroup := router.Group("/blog")
 	controllers.RegisterBlogGroup(blogGroup)
 	adminGroup := router.Group("/admin")
 	controllers.RegisterAdminGroup(adminGroup)
+	// Static routes that serve the same html every time.
 	router.GET("/", utils.ServePage("index.tmpl"))
 	router.GET("/resume", utils.ServePage("resume.tmpl"))
 	router.GET("/contact", utils.ServePage("contact.tmpl"))

@@ -21,7 +21,7 @@ import (
 	"html/template"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/rawleyifowler/site-rework/bootstrap"
+	"github.com/rawleyfowler/rawleydotxyz/bootstrap"
 )
 
 var router *gin.Engine
