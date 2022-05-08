@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 
 import (
 	"net/http"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rawleyfowler/rawleydotxyz/repos"
@@ -40,6 +41,8 @@ func RegisterBlogGroup(r *gin.RouterGroup) {
 	c := NewBlogController(repos.NewBlogRepo("dsn"))
 	r.GET("/", c.IndexBlogPage)
 	r.GET("/post/:url", c.IndividualBlogPage)
+	// RSS Feed
+	r.GET("/feed", c.RSSFeed)
 }
 
 func (bc *BlogController) IndexBlogPage(c *gin.Context) {
@@ -59,4 +62,23 @@ func (bc *BlogController) IndividualBlogPage(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "blog_post.tmpl", post)
+}
+
+func (bc *BlogController) RSSFeed(c *gin.Context) {
+	posts, err := bc.Repository.GetAllBlogPosts()
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "internal_server_error.tmpl", &gin.H{})
+		return
+	}
+	t, err := template.ParseFiles("templates/rss.tmpl")
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "internal_server_error", &gin.H{})
+		return
+	}
+	c.Header("Content-Type", "text/xml")
+	err = t.Execute(c.Writer, posts)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "internal_server_error", &gin.H{})
+		return
+	}
 }

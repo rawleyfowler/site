@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>rawley.xyz</title>
+        <link>https://www.rawley.xyz</link>
+        <description>
+            Rawley's music and tech blog.
+        </description>
+        <language>en-us</language>
+        <image>
+            <title>rawley.xyz</title>
+            <link>https://www.rawley.xyz</link>
+            <url>https://rss.com/blog/wp-content/uploads/2019/10/social_style_3_rss-512-1.png</url>
+            <width>150</width>
+            <height>150</height>
+        </image>
+    </channel>
+    {{range $post := .}}
+    <item>
+        <title>{{$post.Title}}</title>
+        <pubDate>{{$post.Date}}</pubDate>
+        <link>https://rawley.xyz/blog/post/{{$val.Url}}</link>
+        <description></description>
+        <author>rawleyfowler@gmail.com</author>
+    </item>
+    {{end}}
+</rss>
