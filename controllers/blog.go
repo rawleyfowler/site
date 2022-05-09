@@ -83,5 +83,5 @@ func (bc *BlogController) RSSFeed(c *gin.Context) {
 		c.HTML(http.StatusInternalServerError, "internal_server_error", &gin.H{})
 		return
 	}
-	c.Data(http.StatusOK, "text/xml", []byte(strings.Replace("&", "&amp;", rawXml.String(), -1)))
+	c.Data(http.StatusOK, "text/xml", []byte(strings.Replace(rawXml.String(), "&", "&amp;", -1)))
 }
