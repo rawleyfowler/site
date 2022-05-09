@@ -16,7 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
+	"bytes"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"github.com/gin-gonic/gin"
@@ -76,9 +78,11 @@ func (bc *BlogController) RSSFeed(c *gin.Context) {
 		return
 	}
 	c.Header("Content-Type", "text/xml")
-	err = t.Execute(c.Writer, posts)
+	var rawXml bytes.Buffer
+	err = t.Execute(&rawXml, posts)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "internal_server_error", &gin.H{})
 		return
 	}
+	c.String(http.StatusOK, strings.Replace(rawXml.String(), "&", "&amp;", -1), &gin.H{})
 }
