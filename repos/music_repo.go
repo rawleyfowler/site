@@ -37,6 +37,7 @@ func NewMusicRepo(dsnPath string) *MusicRepo {
 	if err != nil {
 		panic(err)
 	}
+	mr.DB.AutoMigrate(&models.Music{})
 	return mr
 }
 
