@@ -34,8 +34,9 @@ func NewMusicController(r *repos.MusicRepo) *MusicController {
 }
 
 func RegisterMusicGroup(r *gin.RouterGroup) {
-	c := NewMusicController(repos.NewMusicRepo("dsn"))
-	r.GET("/", c.IndexMusicPage)
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "wip.tmpl", &gin.H{})
+	})
 }
 
 func (mc *MusicController) IndexMusicPage(c *gin.Context) {

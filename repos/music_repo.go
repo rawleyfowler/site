@@ -43,7 +43,7 @@ func NewMusicRepo(dsnPath string) *MusicRepo {
 
 func (mr *MusicRepo) GetAllSongs() (*[]models.Music, error) {
 	songs := new([]models.Music)
-	err := mr.DB.Table("music").Order("name desc").Scan(songs).Error
+	err := mr.DB.Table("music").Scan(songs).Error
 	if err != nil {
 		return nil, errors.New("Could not load music from database")
 	}
