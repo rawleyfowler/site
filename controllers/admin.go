@@ -54,6 +54,7 @@ func RegisterAdminGroup(r *gin.RouterGroup) {
 	r.POST("/login", a.AdminLogin)
 	r.GET("/post", a.AuthMiddleware, utils.ServePage("create_post.tmpl"))
 	r.POST("/post", a.AuthMiddleware, a.CRUDPost)
+	r.POST("/music", a.AuthMiddleware, a.CreateMusic)
 	r.POST("/user", a.CreateAdmin)
 }
 
@@ -143,6 +144,31 @@ func (a *AdminController) CRUDPost(c *gin.Context) {
 		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
 		return
 	}
+	if err != nil {
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
+	}
+	c.HTML(http.StatusAccepted, "post_success.tmpl", true)
+}
+
+func (a *AdminController) CreateMusic(c *gin.Context) {
+	err := c.Request.ParseForm()
+	if err != nil {
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
+	}
+	f := c.Request.Form
+	if f.Get("url") == "" ||
+		f.Get("name") == "" {
+		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
+		return
+	}
+	tempMusicRepo := repos.NewMusicRepo("dsn")
+	tempMusic := &models.Music{
+		Url:  f.Get("url"),
+		Name: f.Get("name"),
+	}
+	err = tempMusicRepo.CreateMusic(tempMusic)
 	if err != nil {
 		c.HTML(http.StatusNotAcceptable, "post_success.tmpl", false)
 		return

@@ -18,14 +18,43 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 */
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
+
+	"github.com/rawleyfowler/rawleydotxyz/models"
+	"github.com/rawleyfowler/rawleydotxyz/utils"
 )
 
 type MusicRepo struct {
 	DB *gorm.DB
 }
 
-func (mr *MusicRepo) GetAllSongs() []Music {
-	songs := []Music{}
-	mr.DB.Select()
+func NewMusicRepo(dsnPath string) *MusicRepo {
+	mr := new(MusicRepo)
+	var err error
+	mr.DB, err = utils.CreateDatabase(utils.LoadDSN(dsnPath))
+	if err != nil {
+		panic(err)
+	}
+	return mr
+}
+
+func (mr *MusicRepo) GetAllSongs() (*[]models.Music, error) {
+	songs := new([]models.Music)
+	err := mr.DB.Table("music").Order("name desc").Scan(songs).Error
+	if err != nil {
+		return nil, errors.New("Could not load music from database")
+	}
+	return songs, nil
+}
+
+func (mr *MusicRepo) CreateMusic(m *models.Music) error {
+	if m.Name == "" || m.Url == "" {
+		return errors.New("Cannot add music with empty or partially filled values")
+	}
+	if err := mr.DB.Table("music").Save(m).Error; err != nil {
+		return err
+	}
+	return nil
 }

@@ -25,10 +25,6 @@ import (
 	"github.com/rawleyfowler/rawleydotxyz/repos"
 )
 
-type CommentDto struct {
-	Url string
-}
-
 type BlogController struct {
 	Repository *repos.BlogRepo
 }

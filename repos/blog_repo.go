@@ -26,8 +26,7 @@ import (
 )
 
 type BlogRepo struct {
-	DB          *gorm.DB
-	initialized bool
+	DB *gorm.DB
 }
 
 func NewBlogRepo(dsnPath string) *BlogRepo {

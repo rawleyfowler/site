@@ -189,6 +189,25 @@ code {
     overflow: auto;
 }
 
+/* For the music page */
+.music-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.music {
+    display: block;
+}
+
+.music::before {
+    content: "`";
+}
+
+.music::after {
+    content: "`";
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         color: #f8f8f2;
