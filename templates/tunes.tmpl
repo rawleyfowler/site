@@ -4,7 +4,7 @@
 This serves as a compilation of every band that I like. Genres may vary, however I mostly listen to Hardcore, various genres of Metal, and Ska.
 </p>
 <div class="music-container">
-{{ $val := range . }}
+{{ range $val := . }}
 <a href="{{ $val.Url }}" class="music">{{ $val.Name }}</a>
 {{ end }}
 </div>
