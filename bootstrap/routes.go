@@ -33,6 +33,8 @@ func InitializeRoutes(router *gin.Engine) {
 	controllers.RegisterBlogGroup(blogGroup)
 	adminGroup := router.Group("/admin")
 	controllers.RegisterAdminGroup(adminGroup)
+	musicGroup := router.Group("/music")
+	controllers.RegisterMusicGroup(musicGroup)
 	// Static routes that serve the same html every time.
 	router.GET("/", utils.ServePage("index.tmpl"))
 	router.GET("/resume", utils.ServePage("resume.tmpl"))
