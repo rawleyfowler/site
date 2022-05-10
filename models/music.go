@@ -19,15 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fow
 
 import "gorm.io/gorm"
 
-type BlogPost struct {
+type Music struct {
 	gorm.Model
-	Url     string `json:"url" gorm:"primaryKey unique"`
-	Title   string `json:"title" gorm:"unique"`
-	Date    string `json:"date" gorm:"default:NOW()"`
-	Content string `json:"content"`
-	Captcha [2]int `gorm:"-"`
-}
-
-func (b BlogPost) Equals(m *BlogPost) bool {
-	return b.Url == m.Url
+	Name string `json:"name" gorm:"primaryKey unique"`
+	Url  string `json:"url" gorm:"not null"`
 }

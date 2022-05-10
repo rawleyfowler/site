@@ -1,4 +1,4 @@
-package models
+package repos
 
 /*
 Copyright (C) 2022 Rawley Fowler
@@ -17,17 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.Rawley Fowler, 2022
 */
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
-type BlogPost struct {
-	gorm.Model
-	Url     string `json:"url" gorm:"primaryKey unique"`
-	Title   string `json:"title" gorm:"unique"`
-	Date    string `json:"date" gorm:"default:NOW()"`
-	Content string `json:"content"`
-	Captcha [2]int `gorm:"-"`
+type MusicRepo struct {
+	DB *gorm.DB
 }
 
-func (b BlogPost) Equals(m *BlogPost) bool {
-	return b.Url == m.Url
+func (mr *MusicRepo) GetAllSongs() []Music {
+	songs := []Music{}
+	mr.DB.Select()
 }
