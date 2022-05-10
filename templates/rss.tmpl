@@ -14,14 +14,14 @@
             <width>150</width>
             <height>150</height>
         </image>
+        {{range $post := .}}
+        <item>
+            <title>{{$post.Title}}</title>
+            <pubDate>{{$post.Date}}</pubDate>
+            <link>https://rawley.xyz/blog/post/{{$post.Url}}</link>
+            <description>{{$post.Title}}</description>
+            <author>rawleyfowler@gmail.com</author>
+        </item>
+        {{end}}
     </channel>
-    {{range $post := .}}
-    <item>
-        <title>{{$post.Title}}</title>
-        <pubDate>{{$post.Date}}</pubDate>
-        <link>https://rawley.xyz/blog/post/{{$post.Url}}</link>
-        <description>{{$post.Title}}</description>
-        <author>rawleyfowler@gmail.com</author>
-    </item>
-    {{end}}
 </rss>
