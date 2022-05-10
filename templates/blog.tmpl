@@ -10,6 +10,9 @@
 	<body>
 	{{ template "nav.tmpl" . }}
 <h2>Blog posts</h2>
+<p>
+These blog posts are mine and only mine, please do not steal them. You can cite them in your works without permission though. If you want to keep up with my blog I have an <a href="/blog/feed">rss feed</a>.
+</p>
 {{ range $val := . }}
 	<div class="post-record">
 		<div>
