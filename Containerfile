@@ -5,7 +5,7 @@ ARG TARGETOS
 ARG TARGETARCH
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /bin/rawleydotxyz .
 
-FROM scratch AS bin
+FROM scratch
 COPY --from=build /bin/rawleydotxyz /
 EXPOSE 8080/tcp
 CMD ["/rawleydotxyz"]
