@@ -1,5 +1,6 @@
 # [rawley.xyz](https://rawley.xyz)
-This is my personal website and blog. It is written entirely in Go and hosted on an OpenBSD machine (soon to be migrated to Fedora Server), reverse proxied through NGiNX. It is designed to be one-hundred-percent Javascript free, and be usable by text based browsers like [lynx](https://lynx.browser.org).
+This is my personal website and blog. It is written entirely in Go and
+hosted on a Fedora Linux server, reverse proxied through NGiNX. It is designed to be one-hundred-percent Javascript free, and be usable by text based browsers like [lynx](https://lynx.browser.org).
 
 ## Contributing
 I will only accept bug fixes. This site is my own, so I will be declining any design oriented or feature requests.
