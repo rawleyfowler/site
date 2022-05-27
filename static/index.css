@@ -196,6 +196,18 @@ code {
     flex-wrap: wrap;
 }
 
+.banner-long {
+    width: 150px;
+}
+
+.banner-short {
+    width: 75px;
+}
+
+.banner-short, .banner-long {
+    height: 50px;
+}
+
 .music {
     display: block;
 }
