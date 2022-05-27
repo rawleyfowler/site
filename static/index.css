@@ -208,6 +208,10 @@ code {
     content: "`";
 }
 
+input {
+    color: black;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         color: #f8f8f2;
