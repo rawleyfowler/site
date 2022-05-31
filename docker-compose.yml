@@ -20,7 +20,7 @@ services:
     expose:
       - "8080"
     volumes:
-      - .:/
+      - .:/var/www/rawleydotxyz
     links:
       - db
   db:
