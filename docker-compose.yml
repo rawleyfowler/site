@@ -8,11 +8,17 @@ services:
       - "8080"
     volumes:
       - .:/
+    links:
+      - db
   db:
     image: "mysql:5.7"
+    volumes:
+      - mysql-db:/var/lib/mysql
     ports:
       - "3306:3306"
     expose:
       - "3306"
     env_file:
       - production.env
+volumes:
+  mysql-db:
