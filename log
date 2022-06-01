@@ -1,0 +1,57 @@
+Attaching to mysql, d79e9e5728ac_nginx, web
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+[36md79e9e5728ac_nginx |[0m 10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf is not a file or does not exist
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+[36md79e9e5728ac_nginx |[0m /docker-entrypoint.sh: Configuration complete; ready for start up
+[36md79e9e5728ac_nginx |[0m 2022/05/31 22:41:12 [emerg] 1#1: open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+[36md79e9e5728ac_nginx |[0m nginx: [emerg] open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+[33mmysql    |[0m 2022-05-31 22:41:12+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 5.7.38-1debian10 started.
+[33mmysql    |[0m 2022-05-31 22:41:12+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+[33mmysql    |[0m 2022-05-31 22:41:12+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 5.7.38-1debian10 started.
+[33mmysql    |[0m 2022-05-31T22:41:12.816484Z 0 [Warning] Changed limits: max_open_files: 1024 (requested 5000)
+[33mmysql    |[0m 2022-05-31T22:41:12.816540Z 0 [Warning] Changed limits: table_open_cache: 431 (requested 2000)
+[33mmysql    |[0m 2022-05-31T22:41:13.055275Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+[33mmysql    |[0m 2022-05-31T22:41:13.057028Z 0 [Note] mysqld (mysqld 5.7.38) starting as process 1 ...
+[33mmysql    |[0m 2022-05-31T22:41:13.064443Z 0 [Note] InnoDB: PUNCH HOLE support available
+[33mmysql    |[0m 2022-05-31T22:41:13.064461Z 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+[33mmysql    |[0m 2022-05-31T22:41:13.064463Z 0 [Note] InnoDB: Uses event mutexes
+[33mmysql    |[0m 2022-05-31T22:41:13.064465Z 0 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
+[33mmysql    |[0m 2022-05-31T22:41:13.064467Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+[33mmysql    |[0m 2022-05-31T22:41:13.064469Z 0 [Note] InnoDB: Using Linux native AIO
+[33mmysql    |[0m 2022-05-31T22:41:13.064774Z 0 [Note] InnoDB: Number of pools: 1
+[33mmysql    |[0m 2022-05-31T22:41:13.064868Z 0 [Note] InnoDB: Using CPU crc32 instructions
+[33mmysql    |[0m 2022-05-31T22:41:13.070802Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+[33mmysql    |[0m 2022-05-31T22:41:13.091837Z 0 [Note] InnoDB: Completed initialization of buffer pool
+[33mmysql    |[0m 2022-05-31T22:41:13.098670Z 0 [Note] InnoDB: If the mysqld execution user is authorized, page cleaner thread priority can be changed. See the man page of setpriority().
+[33mmysql    |[0m 2022-05-31T22:41:13.110197Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+[33mmysql    |[0m 2022-05-31T22:41:13.123217Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+[33mmysql    |[0m 2022-05-31T22:41:13.123277Z 0 [Note] InnoDB: Setting file './ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+[32mweb      |[0m exec ./rawleydotxyz: no such file or directory
+[36md79e9e5728ac_nginx exited with code 1
+[0m[33mmysql    |[0m 2022-05-31T22:41:13.149076Z 0 [Note] InnoDB: File './ibtmp1' size is now 12 MB.
+[33mmysql    |[0m 2022-05-31T22:41:13.149653Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+[33mmysql    |[0m 2022-05-31T22:41:13.149661Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+[33mmysql    |[0m 2022-05-31T22:41:13.149867Z 0 [Note] InnoDB: Waiting for purge to start
+[33mmysql    |[0m 2022-05-31T22:41:13.200014Z 0 [Note] InnoDB: 5.7.38 started; log sequence number 12659998
+[33mmysql    |[0m 2022-05-31T22:41:13.200263Z 0 [Note] Plugin 'FEDERATED' is disabled.
+[33mmysql    |[0m 2022-05-31T22:41:13.205810Z 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+[33mmysql    |[0m 2022-05-31T22:41:13.229003Z 0 [Note] InnoDB: Buffer pool(s) load completed at 220531 22:41:13
+[32mweb exited with code 1
+[0m[33mmysql    |[0m 2022-05-31T22:41:13.235338Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+[33mmysql    |[0m 2022-05-31T22:41:13.235354Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+[33mmysql    |[0m 2022-05-31T22:41:13.235358Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+[33mmysql    |[0m 2022-05-31T22:41:13.235359Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+[33mmysql    |[0m 2022-05-31T22:41:13.236860Z 0 [Warning] CA certificate ca.pem is self signed.
+[33mmysql    |[0m 2022-05-31T22:41:13.236888Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+[33mmysql    |[0m 2022-05-31T22:41:13.237257Z 0 [Note] Server hostname (bind-address): '*'; port: 3306
+[33mmysql    |[0m 2022-05-31T22:41:13.237337Z 0 [Note] IPv6 is available.
+[33mmysql    |[0m 2022-05-31T22:41:13.237346Z 0 [Note]   - '::' resolves to '::';
+[33mmysql    |[0m 2022-05-31T22:41:13.237359Z 0 [Note] Server socket created on IP: '::'.
+[33mmysql    |[0m 2022-05-31T22:41:13.243394Z 0 [Warning] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+[33mmysql    |[0m 2022-05-31T22:41:13.257323Z 0 [Note] Event Scheduler: Loaded 0 events
+[33mmysql    |[0m 2022-05-31T22:41:13.258047Z 0 [Note] mysqld: ready for connections.
+[33mmysql    |[0m Version: '5.7.38'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server (GPL)
+Gracefully stopping... (press Ctrl+C again to force)

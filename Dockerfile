@@ -1,11 +1,13 @@
-FROM --platform=${BUILDPLATFORM} golang:1.18-bullseye AS build
-WORKDIR .
-ENV CGO_ENABLED=0
-ARG TARGETOS
-ARG TARGETARCH
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /bin/rawleydotxyz .
+FROM golang:1.18-alpine
+ENV PORT=8080
+ENV GIN_MODE=release
 
-FROM scratch
-COPY --from=build /bin/rawleydotxyz /
-EXPOSE 8080/tcp
-CMD ["/rawleydotxyz"]
+RUN apk update && apk upgrade && apk add --no-cache bash git
+WORKDIR /var/www/rawleydotxyz/
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o rawleydotxyz .
+
+EXPOSE $PORT
+CMD ["./rawleydotxyz"]
