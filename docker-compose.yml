@@ -1,13 +1,13 @@
 version: '3'
 services:
   rawleydotxyz:
-    container_name: rawleydotxyz
     build:
       context: .
-      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "8080:8080"
-    expose: ["8080"]
-    extra_hosts:
-      host.docker.internal: host-gateway
+  
+  db:
+    image: mariadb:apline
+    restart: always
+    expose: ["3306"]
