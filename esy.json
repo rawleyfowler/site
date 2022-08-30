@@ -1,0 +1,15 @@
+{
+    "dependencies": {
+	"@opam/dream": "*",
+	"@opam/dune": "*",
+	"@opam/lwt": "*",
+	"@opam/caqti": "*",
+	"@opam/lwt_ppx": "*",
+	"@opam/caqti-driver-sqlite3": "*",
+	"ocaml": "4.12.x"
+    },
+
+    "scripts": {
+	"start": "dune exec --root . ./rawleydotxyz.exe"
+    }
+}

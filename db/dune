@@ -1,0 +1,4 @@
+(library
+	(name database)
+	(public_name rawleydotxyz.database)
+	(libraries caqti caqti-lwt caqti-driver-sqlite3 lwt))

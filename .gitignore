@@ -1,0 +1,8 @@
+_esy/
+_build/
+node_modules
+esy.lock/
+*.db
+*.pem
+*~
+posts/*.post

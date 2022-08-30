@@ -1,0 +1,29 @@
+body {
+    font-size: calc(14px + 0.11vw);
+    width: clamp(373px, 45vw, 50vw);
+    color: black;
+    margin: auto;
+    padding: 2px;
+}
+
+nav {
+    font-size: calc(16px + 0.33vh);
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+}
+
+nav > * {
+    margin-right: 33px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    html {
+	background-color: #222222;
+    }
+    
+    body * {
+	color: lightgrey;
+    }
+}
