@@ -17,14 +17,16 @@ function update_post() {
     local title=${3:?Title is required}
     local content=${4:?Content is required}
 
-    sqlite3 "$BLOG_DIR/database.db" "UPDATE blog_post SET title = '$title', content = '$content' WHERE slug = '$slug'" 2&> /dev/null
+    echo "$date" "$slug" "$title" "$content"
+
+    sqlite3 \
+	"$BLOG_DIR/database.db" \
+	"UPDATE blog_post SET title = '$title', content = '$content' WHERE slug = '$slug'" 2&> /dev/null
 
     local status=$?
 
-    echo $status
-
-    [ $status -eq 0 ] && echo "Updated already existing post: $slug."
-    [ $status -eq 1 ] && echo "Failed to update, or insert post: $slug."
+    [ $status -eq 0 ] && echo "Updated already post: $slug." && return
+    echo "Failed to update, or insert post: $slug."
 }
 
 # params -> slug, title, content, date
@@ -40,10 +42,8 @@ function insert_post() {
 
     local status=$?
 
-    echo $status
-
     [ $status -eq 0 ] && echo "Inserted $slug successfully." && return
-    [ $status -eq 19 ] && update_post "$date" "$slug" "$title" "$content"
+    update_post "$date" "$slug" "$title" "$content"
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # #
@@ -56,11 +56,12 @@ function insert_post() {
 
 for file in $(ls "$BLOG_DIR/posts"); do
     echo "Trying to insert: $file"
+
     target_file="$BLOG_DIR/posts/$file"
-    date=$(sed -n '1p' $target_file)
-    slug=$(sed -n '2p' $target_file)
-    title=$(sed -n '3p' $target_file)
-    content=$(sed -n '4,$p' "$target_file")
+    date=$(sed -n '1p' $target_file | tr -d '\n')
+    slug=$(sed -n '2p' $target_file | tr -d '\n')
+    title=$(sed -n '3p' $target_file | tr -d '\n')
+    content=$(sed -n '4,$p' $target_file | tr -d '\n')
 
     insert_post "$date" "$slug" "$title" "$content"
 done
