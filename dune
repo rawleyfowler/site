@@ -1,5 +1,6 @@
 (executable
 	(name rawleydotxyz)
+	(public_name rawleydotxyz.exe)
 	(libraries dream caqti render database caqti-lwt caqti-driver-sqlite3 lwt))
 
 (env
