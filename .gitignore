@@ -6,3 +6,5 @@ esy.lock/
 *.pem
 *~
 posts/*.post
+#*
+
