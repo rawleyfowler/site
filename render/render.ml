@@ -93,7 +93,7 @@ module Render = struct
           |> render_page
           |> Dream.html
 
-  let render_blog_index _ =
+  let render_blog_index (_ : Dream.request) =
     let buff = Buffer.create 512 in
     let () = Buffer.add_string buff "<h3>Blog</h3>" in
     let posts_t = Database.get_all_blog_posts () in

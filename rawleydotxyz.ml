@@ -6,7 +6,7 @@ exception DatabaseCreationFailure
 
 let _ =
   Database.create_blog_post_table () >>= function
-  | Ok () -> Lwt_io.print "Database was initialized successfully\n"
+  | Ok () -> Lwt_io.print "Database initialized successfully.\n"
   | Error _ -> raise DatabaseCreationFailure
 
 let () =
