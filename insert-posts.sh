@@ -8,7 +8,10 @@ function usage() {
 }
 
 [ ! -x "$(command -v sqlite3)" ] && echo "You need SQLite3 to run this" && exit 1
-[ -z "$BLOG_DIR" ] && echo '$BLOG_DIR is not set! Defaulting to .' && BLOG_DIR="."
+if [ -z "$BLOG_DIR" ]; then
+    echo "Looking for posts in ./posts because BLOG_DIR is not set."
+    BLOG_DIR="."
+fi
 
 # params -> slug, title, content, date
 function update_post() {
@@ -17,33 +20,33 @@ function update_post() {
     local title=${3:?Title is required}
     local content=${4:?Content is required}
 
-    echo "$date" "$slug" "$title" "$content"
+    echo "Trying to update $slug"
 
     sqlite3 \
 	"$BLOG_DIR/database.db" \
-	"UPDATE blog_post SET title = '$title', content = '$content' WHERE slug = '$slug'" 2&> /dev/null
+	"UPDATE blog_post SET title = '$title', content = '$content' WHERE slug = '$slug'" 2> /dev/null
 
-    local status=$?
+    local status="$?"
 
-    [ $status -eq 0 ] && echo "Updated already post: $slug." && return
+    [[ "$status" = "0" ]] && echo "Successfully updated already existing post: $slug" && return
     echo "Failed to update, or insert post: $slug."
 }
 
 # params -> slug, title, content, date
 function insert_post() {
-    [ $# -eq 0 ] && exit 1;
+    [ ! $# -eq 4 ] && exit 1;
 
     local date=${1:?Date is required}
     local slug=${2:?Slug is required}
     local title=${3:?Title is required}
     local content=${4:?Content is required}
     
-    sqlite3 "$BLOG_DIR/database.db" "INSERT INTO blog_post (slug, title, content, date) VALUES ('$slug', '$title', '$content', '$date');" 2&> /dev/null
+    sqlite3 "$BLOG_DIR/database.db" "INSERT INTO blog_post (slug, title, content, date) VALUES ('$slug', '$title', '$content', '$date');" 2> /dev/null
 
-    local status=$?
+    local status="$?"
 
-    [ $status -eq 0 ] && echo "Inserted $slug successfully." && return
-    update_post "$date" "$slug" "$title" "$content"
+    [ "$status" = "0" ] && echo "Inserted $slug successfully." && return
+    [ "$status" = "19" ] && echo "Post $slug already exists." && update_post "$date" "$slug" "$title" "$content"
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # #
