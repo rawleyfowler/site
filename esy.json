@@ -10,6 +10,7 @@
     },
 
     "scripts": {
-	"start": "dune exec --root . ./rawleydotxyz.exe"
+      "start": "dune exec --root . ./rawleydotxyz.exe",
+      "build": "esy b dune build"
     }
 }
