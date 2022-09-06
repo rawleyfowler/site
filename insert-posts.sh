@@ -8,7 +8,7 @@ function usage() {
 }
 
 [ ! -x "$(command -v sqlite3)" ] && echo "You need SQLite3 to run this" && exit 1
-[ -z "$BLOG_DIR" ] && echo '$BLOG_DIR is not set' && usage
+[ -z "$BLOG_DIR" ] && echo '$BLOG_DIR is not set! Defaulting to .' && BLOG_DIR="."
 
 # params -> slug, title, content, date
 function update_post() {

@@ -20,6 +20,11 @@ nav > * {
     margin-right: 33px;
 }
 
+.link-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 @media (prefers-color-scheme: dark) {
     html {
