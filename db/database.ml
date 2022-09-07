@@ -29,7 +29,7 @@ module Q = struct
        content text NOT NULL,
        date text NOT NULL,
        active TINYINT DEFAULT 1,
-       hidden_date INT GENERATED ALWAYS AS unixepoch('now')
+       hidden_date DEFAULT (unixepoch('now'))
        |eos}
   
   let create_blog_post =
