@@ -28,7 +28,8 @@ module Q = struct
        title text NOT NULL,
        content text NOT NULL,
        date text NOT NULL,
-       active TINYINT DEFAULT 1)
+       active TINYINT DEFAULT 1,
+       hidden_date INT GENERATED ALWAYS AS unixepoch('now')
        |eos}
   
   let create_blog_post =
@@ -37,7 +38,7 @@ module Q = struct
 
   let get_all_blog_posts =
     unit ->* blog_post @@
-      "SELECT slug, title, content, date FROM blog_post WHERE active = 1"
+      "SELECT slug, title, content, date FROM blog_post WHERE active = 1 ORDER BY hidden_date DESC"
 
   let get_all_blog_posts_for_display =
     unit ->* tup2 string string @@
