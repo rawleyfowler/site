@@ -34,7 +34,7 @@ function update_post() {
 
 # params -> slug, title, content, date
 function insert_post() {
-    [ ! $# -eq 4 ] && exit 1;
+    [ ! $# -eq 4 ] && echo "something went wrong" && exit 1
 
     local date=${1:?Date is required}
     local slug=${2:?Slug is required}
