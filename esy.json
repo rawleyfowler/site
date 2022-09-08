@@ -6,7 +6,7 @@
 	"@opam/caqti": "*",
 	"@opam/lwt_ppx": "*",
 	"@opam/caqti-driver-sqlite3": "*",
-	"ocaml": "4.12.x"
+	"ocaml": "*"
     },
 
     "scripts": {

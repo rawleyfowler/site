@@ -2,12 +2,14 @@ open Lwt.Infix
 open Database
 open Render
 
-exception DatabaseCreationFailure
+let db_created = ref true
 
-let _ =
-  Database.create_blog_post_table () >>= function
+let _ = Database.create_blog_post_table () >>= function
   | Ok () -> Lwt_io.print "Database initialized successfully.\n"
-  | Error _ -> raise DatabaseCreationFailure
+  | Error _ -> Lwt.return (db_created := false)
+
+let () = Unix.sleepf 2.0
+let () = if not !db_created then failwith "Could not initialize database"
 
 let () =
   Dream.run
