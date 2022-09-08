@@ -11,6 +11,6 @@
 
     "scripts": {
       "start": "dune exec --root . ./rawleydotxyz.exe",
-      "build": "esy b dune build"
+      "build": "esy dune build"
     }
 }
