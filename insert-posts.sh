@@ -46,6 +46,7 @@ function insert_post() {
     local status="$?"
 
     [ "$status" = "0" ] && echo "Inserted $slug successfully." && return
+    [ "$status" = "8" ] && echo "The database is read restricted, did you run the program as the correct user?" && exit 1
     [ "$status" = "19" ] && echo "Post $slug already exists." && update_post "$date" "$slug" "$title" "$content"
 }
 
