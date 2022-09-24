@@ -84,7 +84,7 @@ module Render = struct
       {eos|<div class="link-wrapper">
        <a href="/blog/%s">%s</a>
        <i>%s</i>
-       </dev>|eos}
+       </div>|eos}
       p.slug p.title p.date
 
   let generate_rss_item (p : BlogPost.t) =
