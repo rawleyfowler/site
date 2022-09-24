@@ -95,8 +95,6 @@ module Render = struct
        <description></description>
        </item>|eos}
       p.title p.slug
-
-  let 
   
   let handle_error e =
     print_endline (Caqti_error.show e);
