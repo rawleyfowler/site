@@ -120,6 +120,7 @@ module Render = struct
   let render_blog_index (_ : Dream.request) =
     let buff = Buffer.create 512 in
     let () = Buffer.add_string buff "<h3>Blog</h3>" in
+    let () = Buffer.add_string buff "\r\n<p>I have an <a href=\"/blog/rss.xml\">rss feed</a> too.</p>"
     let posts_t = Database.get_all_blog_posts () in
     posts_t >>= function
     | Error e -> handle_error e
