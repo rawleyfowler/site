@@ -94,7 +94,7 @@ module Render = struct
        <link>https://rawley.xyz/blog/%s</link>
        <description></description>
        </item>|eos}
-      (html_unescape p.title) p.slug
+      p.title p.slug
 
   let 
   
@@ -151,7 +151,10 @@ module Render = struct
     posts_t >>= function
     | Error e -> handle_error e
     | Ok posts ->
-       let () = List.iter (fun t -> generate_rss_item t |> add_str) posts in
+       let () = List.iter (fun t -> generate_rss_item t
+                                    |> html_unescape
+                                    |> add_str) posts
+       in
        let () =
          add_str
            {eos|</channel>
