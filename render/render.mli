@@ -9,6 +9,8 @@ module Render :
     val render_page : string -> string
     val generate_link : BlogPost.t -> string
     val handle_error : [< Caqti_error.t ] -> Dream.response Lwt.t
+    val handle_not_found : unit -> Dream.response Lwt.t
     val render_blog_post : Dream.request -> Dream.response Lwt.t
     val render_blog_index : Dream.request -> Dream.response Lwt.t
+    val render_rss_feed : Dream.request -> Dream.response Lwt.t
   end

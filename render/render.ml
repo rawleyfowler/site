@@ -2,18 +2,15 @@ open Database
 open Lwt
 
 module Render = struct
-  let not_found_template = "404 Not found"
-  let error_template = "500 Server Error"
-
   let header_template =
-    {eos|
-     <!DOCTYPE html>
+    {eos|<!DOCTYPE html>
      <head>
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
      <meta name="description" content="Rawley.xyz, Rawley Fowler's blog and personal website">
      <title>rawley.xyz</title>
      <link href="/static/index.css" rel="stylesheet">
+     <link rel="alternate" type="application/rss+xml" href="https://rawley.xyz/blog/rss.xml" title="rawley.xyz">
      </head>
      <body>
      <body>
@@ -36,12 +33,10 @@ module Render = struct
      </li>
      </nav>
      </header>
-     <main>
-     |eos}
+     <main>|eos}
 
   let footer_template =
-    {eos|
-     </main>
+    {eos|</main>
      <footer>
      <hr>
      <p>
@@ -53,8 +48,19 @@ module Render = struct
      </p>
      </footer>
      </body>
-     </html>
-     |eos}
+     </html>|eos}
+  
+  let not_found_template =
+    Printf.sprintf "%s %s %s"
+      header_template
+      "<h4>404 Not found<h4>"
+      footer_template
+  
+  let error_template =
+    Printf.sprintf "%s %s %s"
+      header_template
+      "<h4>500 Server Error</h4>"
+      footer_template
 
   let render_page content =
     Printf.sprintf
@@ -69,16 +75,27 @@ module Render = struct
     
   let generate_link (p : BlogPost.t) =
     Printf.sprintf
-      {eos|
-       <div class="link-wrapper">
+      {eos|<div class="link-wrapper">
        <a href="/blog/%s">%s</a>
        <i>%s</i>
-       </div>
-       |eos}
+       </dev>|eos}
       p.slug p.title p.date
+
+  let generate_rss_item (p : BlogPost.t) =
+    Printf.sprintf
+      {eos|<item>
+       <title>%s</title>
+       <link>https://rawley.xyz/blog/%s</link>
+       <description></description>
+       </item>|eos}
+      p.title p.slug
   
   let handle_error e =
-    print_endline (Caqti_error.show e); error_template |> Dream.html
+    print_endline (Caqti_error.show e);
+    Dream.html ?code:(Some 500) error_template
+
+  let handle_not_found () =
+    Dream.html ?code:(Some 404) not_found_template
 
   let render_blog_post request =
     let slug = Dream.param request "post" in
@@ -88,7 +105,7 @@ module Render = struct
     | Error e -> handle_error e
     | Ok p_opt ->
        match p_opt with
-       | None -> not_found_template |> Dream.html
+       | None -> handle_not_found ()
        | Some p ->
           Printf.sprintf "<h2>%s</h2>\r\n%s" p.title p.content
           |> render_page
@@ -106,4 +123,34 @@ module Render = struct
                  render_page @@ Buffer.contents buff
                else render_page "<br>No blog posts..." in
        Dream.html c
+
+  let render_rss_feed (_ : Dream.request) =
+    let buff = Buffer.create 512 in
+    let add_str = Buffer.add_string buff in
+    let () =
+      add_str
+        {eos|<?xml version="1.0" encoding="UTF-8" ?>
+         <rss version="2.0">
+         <channel>
+         <title>rawley.xyz blog</title>
+         <description>Functional programming, math, and philosophy</description>
+         <image>
+         <url>https://rawley.xyz/static/rawley.xyz.png</url>
+         <link>https://rawley.xyz/</link>
+         </image>|eos}
+    in
+    let posts_t = Database.get_all_blog_posts () in
+    posts_t >>= function
+    | Error e -> handle_error e
+    | Ok posts ->
+       let () = List.iter (fun t -> generate_rss_item t |> add_str) posts in
+       let () =
+         add_str
+           {eos|</channel>
+            </rss>|eos}
+       in
+       Lwt.return @@
+         Dream.response
+           ~headers:["Content-Type", "text/xml";]
+           (Buffer.contents buff)
 end

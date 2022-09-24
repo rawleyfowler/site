@@ -21,7 +21,9 @@ let () =
          Dream.get "/philosophy" @@ Dream.from_filesystem "html" "philosophy.html";
          Dream.get "/web-ring" @@ Dream.from_filesystem "html" "web-ring.html";
          Dream.get "/blog" Render.render_blog_index;
-         Dream.scope "/blog" [Dream.origin_referrer_check] [
+         Dream.scope "/blog" [] [
+             Dream.get "/rss.xml" Render.render_rss_feed;
              Dream.get "/:post" Render.render_blog_post
            ];
+         Dream.get "/**" (fun _ -> Render.handle_not_found ())
        ]
