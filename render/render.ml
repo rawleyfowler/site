@@ -49,6 +49,16 @@ module Render = struct
      </footer>
      </body>
      </html>|eos}
+
+  let replace_sequence r t s =
+    Str.(global_replace (regexp r) t s)
+
+  let html_unescape s =
+    s
+    |> replace_sequence "&lsquo;" "'"
+    |> replace_sequence "&rsquo;" "'"
+    |> replace_sequence "&gt;" ">"
+    |> replace_sequence "&lt;" "<"
   
   let not_found_template =
     Printf.sprintf "%s %s %s"
@@ -64,11 +74,7 @@ module Render = struct
 
   let render_page content =
     Printf.sprintf
-      {eos| 
-       %s
-       %s
-       %s
-       |eos}
+      "%s %s %s"
       header_template
       content
       footer_template
@@ -88,7 +94,9 @@ module Render = struct
        <link>https://rawley.xyz/blog/%s</link>
        <description></description>
        </item>|eos}
-      p.title p.slug
+      (html_unescape p.title) p.slug
+
+  let 
   
   let handle_error e =
     print_endline (Caqti_error.show e);
