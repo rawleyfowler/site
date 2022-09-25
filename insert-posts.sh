@@ -68,8 +68,6 @@ for file in $(ls "$BLOG_DIR/posts"); do
     content=$(sed -n '4,$p' $target_file | tr -d '\n')
 
     content=${1//&/&amp;}
-    content=${s//</&lt;}
-    content=${s//>/&gt;}
     content=${s//'"'/&quot;}
     content=${s//"'"/&lsquo;}
 
