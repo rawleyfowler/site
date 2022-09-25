@@ -66,8 +66,12 @@ for file in $(ls "$BLOG_DIR/posts"); do
     slug=$(sed -n '2p' $target_file | tr -d '\n')
     title=$(sed -n '3p' $target_file | tr -d '\n')
     content=$(sed -n '4,$p' $target_file | tr -d '\n')
-    # Cool little sed to escape html
-    content=$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g' "$content")
+
+    content=${1//&/&amp;}
+    content=${s//</&lt;}
+    content=${s//>/&gt;}
+    content=${s//'"'/&quot;}
+    content=${s//"'"/&lsquo;}
 
     insert_post "$date" "$slug" "$title" "$content"
 done
