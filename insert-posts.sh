@@ -68,7 +68,6 @@ for file in $(ls "$BLOG_DIR/posts"); do
     content=$(sed -n '4,$p' $target_file | tr -d '\n')
 
     content=${content//&/&amp;}
-    content=${content//'"'/&quot;}
     content=${content//"'"/&lsquo;}
 
     insert_post "$date" "$slug" "$title" "$content"
