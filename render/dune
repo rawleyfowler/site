@@ -2,3 +2,9 @@
 	(name render)
 	(public_name rawleydotxyz.render)
 	(libraries dream lwt database))
+
+(rule
+ (targets index.ml layout.ml)
+ (deps index.eml.ml layout.eml.ml)
+ (action
+  (run dream_eml %{deps} --workspace %{workspace_root})))

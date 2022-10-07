@@ -64,33 +64,31 @@ end
 module Db = (val Caqti_lwt.connect (Uri.of_string "sqlite3:database.db") >>= Caqti_lwt.or_fail |> Lwt_main.run)
 
 (* Wrappers for the generic functions defined in Q *)
-module Database = struct
-  let create_blog_post_table () =
-    Db.exec Q.create_blog_post_table ()
+let create_blog_post_table () =
+  Db.exec Q.create_blog_post_table ()
 
-  let create_blog_post slug title content date =
-    Db.exec Q.create_blog_post (slug, title, content, date)
+let create_blog_post slug title content date =
+  Db.exec Q.create_blog_post (slug, title, content, date)
 
-  let update_blog_post_content slug content =
-    Db.exec Q.update_blog_post_content (content, slug)
+let update_blog_post_content slug content =
+  Db.exec Q.update_blog_post_content (content, slug)
 
-  let update_blog_post_title slug title =
-    Db.exec Q.update_blog_post_title (title, slug)
+let update_blog_post_title slug title =
+  Db.exec Q.update_blog_post_title (title, slug)
 
-  let get_blog_post_by_slug slug =
-    Db.find_opt Q.get_blog_post_by_slug slug
+let get_blog_post_by_slug slug =
+  Db.find_opt Q.get_blog_post_by_slug slug
 
-  let get_all_blog_posts () =
-    Db.collect_list Q.get_all_blog_posts ()
+let get_all_blog_posts () =
+  Db.collect_list Q.get_all_blog_posts ()
 
-  let iter_blog_posts f =
-    Db.iter_s Q.get_all_blog_posts f ()
+let iter_blog_posts f =
+  Db.iter_s Q.get_all_blog_posts f ()
 
-  let (>>=?) monad func =
-    monad >>= (function | Ok x -> func x | Error err -> Lwt.return (Error err))
+let (>>=?) monad func =
+  monad >>= (function | Ok x -> func x | Error err -> Lwt.return (Error err))
 
-  let report_error = function
-    | Ok () -> Lwt.return_unit
-    | Error err ->
-       Lwt_io.eprintl (Caqti_error.show err)
-end
+let report_error = function
+  | Ok () -> Lwt.return_unit
+  | Error err ->
+      Lwt_io.eprintl (Caqti_error.show err)

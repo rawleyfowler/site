@@ -1,6 +1,4 @@
 open Lwt.Infix
-open Database
-open Render
 
 let db_created = ref true
 
@@ -16,7 +14,7 @@ let () =
   @@ Dream.logger
   @@ Dream.router [
          Dream.get "/static/**" @@ Dream.static "static";
-         Dream.get "/" @@ Dream.from_filesystem "html" "index.html";
+         Dream.get "/" @@ (fun _ -> Render.render_index ());
          Dream.get "/resume" @@ Dream.from_filesystem "html" "resume.html";
          Dream.get "/philosophy" @@ Dream.from_filesystem "html" "philosophy.html";
          Dream.get "/web-ring" @@ Dream.from_filesystem "html" "web-ring.html";
