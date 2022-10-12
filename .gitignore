@@ -7,5 +7,4 @@ esy.lock/
 *~
 posts/*.blog
 posts/*.post
-#*
-
+\#*

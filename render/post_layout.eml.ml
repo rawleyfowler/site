@@ -1,10 +1,13 @@
-let render body =
+let render ~title ~tags ~body =
+  let combine_tags lst =
+    List.fold_left (fun t a -> t ^ " " ^ a) "" lst
+  in
   <html>
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Rawley.xyz, Rawley Fowler's blog and personal website">
-  <title>rawley.xyz</title>
+  <meta name="description" content="<%s combine_tags tags %>">
+  <title><%s title %></title>
   <link href="/static/index.css" rel="stylesheet">
   </head>
   <body>
@@ -28,6 +31,7 @@ let render body =
   </nav>
   </header>
   <main>
+  <h2><%s title %></h2>
   <%s! body %>
   </main>
   <footer>

@@ -21,7 +21,7 @@ let () =
          Dream.get "/blog" Render.render_blog_index;
          Dream.scope "/blog" [] [
              Dream.get "/rss.xml" Render.render_rss_feed;
-             Dream.get "/:post" Render.render_blog_post
+             Dream.get "/:post" (fun request -> Render.render_blog_post ~slug:(Dream.param request "post"))
            ];
          Dream.get "/**" (fun _ -> Render.handle_not_found ())
        ]

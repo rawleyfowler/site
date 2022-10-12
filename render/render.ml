@@ -105,20 +105,6 @@ let handle_error e =
 let handle_not_found () =
   Dream.html ?code:(Some 404) not_found_template
 
-let render_blog_post request =
-  let slug = Dream.param request "post" in
-  let post_t = Database.get_blog_post_by_slug slug in
-  post_t >>= fun post ->
-  match post with
-  | Error e -> handle_error e
-  | Ok p_opt ->
-      match p_opt with
-      | None -> handle_not_found ()
-      | Some p ->
-        Printf.sprintf "<h2>%s</h2>\r\n%s" p.title p.content
-        |> render_page
-        |> Dream.html
-
 let render_blog_index (_ : Dream.request) =
   let buff = Buffer.create 512 in
   let () = Buffer.add_string buff "<h3>Blog</h3> I have an <a href=\"/blog/rss.xml\">rss feed</a> too." in
@@ -167,6 +153,18 @@ let render_rss_feed (_ : Dream.request) =
 
 let render_simple (module R : SimpleRender) =
   R.render () |> Layout.render |> Dream.html
+
+let render_blog_post ~slug =
+  let%lwt post = Database.get_blog_post_by_slug slug in
+  match post with
+  | Ok p_opt ->
+    begin match p_opt with
+    | None -> handle_not_found ()
+    | Some p -> 
+      Dream.html @@ Post_layout.render ~title:p.title ~body:p.content ~tags:[p.title]
+  end
+  | Error e -> handle_error e
+  
 
 let render_index () = 
   render_simple (module Index)
