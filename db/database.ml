@@ -1,6 +1,6 @@
 open Lwt
 
-module BlogPost = struct
+module Blog_post = struct
   type t = {
       slug : string;
       title : string;
@@ -14,7 +14,7 @@ module Q = struct
   open Caqti_type.Std
 
   let blog_post =
-    let open BlogPost in
+    let open Blog_post in
     let encode {slug; title; content; date} = Ok (slug, title, content, date) in
     let decode (slug, title, content, date) = Ok {slug; title; content; date} in
     let b_rep = Caqti_type.(tup4 string string string string) in

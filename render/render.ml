@@ -1,6 +1,6 @@
 open Lwt
 
-module BlogPost = Database.BlogPost
+module Blog_post = Database.Blog_post
 
 module type SimpleRender = (sig val render : unit -> string end)
 
@@ -81,7 +81,7 @@ let render_page content =
     content
     footer_template
   
-let generate_link (p : BlogPost.t) =
+let generate_link (p : Blog_post.t) =
   Printf.sprintf
     {eos|<div class="link-wrapper">
       <a href="/blog/%s">%s</a>
@@ -89,7 +89,7 @@ let generate_link (p : BlogPost.t) =
       </div>|eos}
     p.slug p.title p.date
 
-let generate_rss_item (p : BlogPost.t) =
+let generate_rss_item (p : Blog_post.t) =
   Printf.sprintf
     {eos|<item>
       <title>%s</title>
@@ -105,18 +105,11 @@ let handle_error e =
 let handle_not_found () =
   Dream.html ?code:(Some 404) not_found_template
 
-let render_blog_index (_ : Dream.request) =
-  let buff = Buffer.create 512 in
-  let () = Buffer.add_string buff "<h3>Blog</h3> I have an <a href=\"/blog/rss.xml\">rss feed</a> too." in
-  let posts_t = Database.get_all_blog_posts () in
-  posts_t >>= function
+let render_blog_index () =
+  let%lwt posts = Database.get_all_blog_posts () in
+  match posts with
   | Error e -> handle_error e
-  | Ok posts ->
-      List.iter (fun p -> Buffer.add_string buff (generate_link p)) posts;
-      let c = if List.length posts <> 0 then
-                render_page @@ Buffer.contents buff
-              else render_page "<br>No blog posts..." in
-      Dream.html c
+  | Ok posts -> Blog_index.render ~posts |> Layout.render |> Dream.html
 
 let render_rss_feed (_ : Dream.request) =
   let buff = Buffer.create 512 in

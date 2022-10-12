@@ -18,7 +18,7 @@ let () =
          Dream.get "/resume" @@ Dream.from_filesystem "html" "resume.html";
          Dream.get "/philosophy" @@ Dream.from_filesystem "html" "philosophy.html";
          Dream.get "/web-ring" @@ Dream.from_filesystem "html" "web-ring.html";
-         Dream.get "/blog" Render.render_blog_index;
+         Dream.get "/blog" (fun _ -> Render.render_blog_index ());
          Dream.scope "/blog" [] [
              Dream.get "/rss.xml" Render.render_rss_feed;
              Dream.get "/:post" (fun request -> Render.render_blog_post ~slug:(Dream.param request "post"))
