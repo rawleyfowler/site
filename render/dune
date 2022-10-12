@@ -1,12 +1,6 @@
 (library
 	(name render)
 	(public_name rawleydotxyz.render)
-	(libraries dream lwt database)
+	(libraries dream lwt database views)
 	(preprocess 
 		(pps lwt_ppx)))
-
-(rule
- (targets index.ml layout.ml post_layout.ml blog_index.ml)
- (deps index.eml.ml layout.eml.ml post_layout.eml.ml blog_index.eml.ml)
- (action
-  (run dream_eml %{deps} --workspace %{workspace_root})))

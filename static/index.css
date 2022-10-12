@@ -4,9 +4,7 @@ body {
     color: black;
     margin: auto;
     padding: 2px;
-    font-family: 'Helvetica Neue',
-		 'Arial Nova',
-                 sans-serif;
+    font-family: 'Helvetica Neue', 'Arial Nova', sans-serif;
 }
 
 nav {

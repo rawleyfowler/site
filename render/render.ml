@@ -1,4 +1,5 @@
 open Lwt
+open Views
 
 module Blog_post = Database.Blog_post
 
