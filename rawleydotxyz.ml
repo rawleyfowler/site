@@ -14,6 +14,7 @@ let () =
   @@ Dream.logger
   @@ Dream.router [
          Dream.get "/static/**" @@ Dream.static "static";
+         Dream.get "/favicon.ico" @@ Dream.from_filesystem "static" "favico.png";
          Dream.get "/" @@ (fun _ -> Render.render_index ());
          Dream.get "/resume" @@ Dream.from_filesystem "html" "resume.html";
          Dream.get "/philosophy" @@ Dream.from_filesystem "html" "philosophy.html";
