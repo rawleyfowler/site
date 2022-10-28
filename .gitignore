@@ -8,3 +8,4 @@ esy.lock/
 posts/*.blog
 posts/*.post
 \#*
+.DS_Store
