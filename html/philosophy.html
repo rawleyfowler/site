@@ -8,107 +8,113 @@
     <link href="/static/index.css" rel="stylesheet">
     <style>
       h4 {
-	  font-size: 1.2em;
+		  font-size: 1.2em;
       }
 
       h5 {
-	  font-size: 1em;
+		  font-size: 1em;
       }
       
       i:before, i:after {
-	  content: "`";
+		  content: "`";
       }
     </style>
   </head>
   <body>
     <header>
       <h1>
-	<a href="/">/home/rawley.xyz</a>
+		<a href="/">/home/rawley.xyz</a>
       </h1>
       <nav>
-	<li>
-	  <a href="/blog">blog</a>
-	</li>
-	<li>
-	  <a href="/resume">resume</a>
-	</li>
-	<li>
-	  <a href="/philosophy">philosophy</a>
-	</li>
-	<li>
-	  <a href="/web-ring">web ring</a>
-	</li>
+		<li>
+		  <a href="/blog">blog</a>
+		</li>
+		<li>
+		  <a href="/resume">resume</a>
+		</li>
+		<li>
+		  <a href="/philosophy">philosophy</a>
+		</li>
+		<li>
+		  <a href="/web-ring">web ring</a>
+		</li>
       </nav>
     </header>
     <main>
       <h3>Philosophy</h3>
-      <h4>The Problem with Modern Computing</h4>
+      <h4>Modern computing and the modern mindset</h4>
       <p>
-	As computers get faster get faster, code quality and performance get's worse. The tragectory of the software world
-	(particularily in the web dev sector) is to produce solutions to problems, without considering
-	performance, optimization, and availability. How many billions of CPU cycles have been
-	lost rendering SPA's and PWA's? In reality, computers are limited tools for communication, mathematics,
-	and entertainment, not for loading 2MB JavaScript payloads, that in turn render the page.
+		As computers get faster get faster, code quality and performance get's worse. The tragectory of the software world
+		(particularily in the web dev sector) is to produce solutions to problems, without considering
+		performance, optimization, and availability. How many billions of CPU cycles have been
+		lost rendering SPA's and PWA's? In reality, computers are limited tools for communication, mathematics,
+		and entertainment, not for loading 2MB JavaScript payloads, that in turn render the page. This way of computing is almost synonymous with the world views of most "modern" people.
       </p>
       <h4>Solve Your Own Problems</h4>
       <p>
-	These ideas also, drastically effect the availability of software. Most software nowadays is horrifically bloated.
-	It's not rare to see 2GB `node_modules` folders when working on Node.js projects, and the best part is, half of
-	the packages are just simple packages like `isOdd` and `isEven`. How lazy have developers become? We reach for
-	pre-made solutions to well-defined problems when we could easily write our own without exposing our software to
-	potential security vulnerabilities, and inturn reducing bloat. Some developers will argue
-	"why do it yourself when I can get a premade solution, that I know works!" Sure, download that dependency, link that
-	project to yours, but know this. You will <b>never</b> develop anything truly unique if the solutions to <u>your</u>
-	problems are solved by people smarter than you. Simply put, how do you think the library creators made it to the level
-	they're at today?
+		These ideas also, drastically effect the availability of software. Most software nowadays is horrifically bloated.
+		It's not rare to see 2GB `node_modules` folders when working on Node.js projects, and the best part is, half of
+		the packages are just simple packages like `isOdd` and `isEven`. How lazy have developers become? We reach for
+		pre-made solutions to well-defined problems when we could easily write our own without exposing our software to
+		potential security vulnerabilities, and inturn reducing bloat. Some developers will argue
+		"why do it yourself when I can get a premade solution, that I know works!" Sure, download that dependency, link that
+		project to yours, but know this. You will <b>never</b> develop anything truly unique if the solutions to <u>your</u>
+		problems are solved by people smarter than you. Simply put, how do you think the library creators made it to the level they're at today? Heck, even most library code isn't particularly smart, so what's the excuse?
       </p>
       <p>
-	Packages also, can make us feel very productive. This is something that Jonathan Blow points out in one of his talks,
-	Blow mentions that high-level languages, and libraries make us feel like we're doing a lot more than we really are.
-	Ken Thompson and company wrote most of Unix in 3 weeks; an entire operating system, kernel and all. Compare this to
-	the most "productive" day of a web developer. Blow demonstrates in his talk that as companies progress they hire more
-	and more people, but the products and codebases of the companies rarely change drastically enough to warrant this. Meta
-	for example, employs 71 thousand people as of 2021, how often does Facebook, Instagram, or WhatsApp change?
-	To put it nicely, most developers don't do very much at all.
-	(To put it in math terms where p(x) = productivity per employee, and x = number of employees,
-	Lim x -> &infin; p(x) = 0).
+		Packages make us feel very productive. This is something that Jonathan Blow (a very critical and influential programmer) points out in his talk about developer productivity.
+		Blow mentions that high-level languages, and libraries make us feel like we're doing a lot more than we really are.
+		Ken Thompson and company wrote most of Unix in 3 weeks; an entire operating system, kernel and all. Compare this to
+		the most "productive" day of a web developer. Blow demonstrates in his talk that as companies progress they hire more
+		and more people, but the products and codebases of the companies rarely change drastically enough to warrant this. Meta
+		for example, employs 71 thousand people as of 2021, how often does Facebook, Instagram, or WhatsApp change?
+		To put it nicely, most developers don't do very much at all.
+		(To put it in math terms where p(x) = productivity per employee, and x = number of employees,
+		Lim x -> &infin; p(x) = 0).
       </p>
       <p>
-	It is far more interesting, educational, and engaging to solve problems, rather than use a pre-built solution. Developers
-	will create truly unique, and engaging solutions that can be iterated and improved, when needed without having to pester
-	library maintainers. And to top it all off, your solution will be unique to your workload and problem. You will be solving
-	your problem better than something generic.
+		It is far more interesting, educational, and engaging to solve problems, rather than use a pre-built solution. Developers
+		will create truly unique, and engaging solutions that can be iterated and improved, when needed without having to pester
+		library maintainers. And to top it all off, your solution will be unique to your workload and problem. You will be solving
+		your problem better than something generic.
       </p>
       <h4>The Core 2 Duo Standard</h4>
       <p>
-	Software before the 2010's had to take into account the machines that they were running on, in turn
-	causing software to be developed in a more intimate way, focusing optimizations rather than features. 
-	Machines were fair, but not powerful. Think, Intel Core 2 Duo, 2-4gb of DDR2. This hardware is actually very good, 
+		Software before the 2010's had to take into account the machines that they were running on, in turn
+		causing software to be developed in a more intimate way, focusing optimizations rather than features. 
+		Machines were fair, but not powerful. Think, Intel Core 2 Duo, 2-4gb of DDR2. This hardware is actually very good, 
         and in my opinion as much as an average person needs (even today). 
-        If you write software (outside of graphics programming, games, etc), and it can't run on a Intel Core 2 Duo, you need to seriously 
-	re-think what you're doing, and how you're doing it.
+        If you write software, and it can't run on a Intel Core 2 Duo, you need to seriously 
+		re-think what you're doing, and how you're doing it. This for obvious reasons does not take into account GPU bound tasks.
       </p>
+	  <p>
+		I believe that the hardware limitations of the pre 2010's were what drove the software quality gold rush of the time.
+		Most software released during those times is still around, sure there may have been some un-forseeable security issues,
+		but that software was really good. BSD's, Linux, Unix, Emacs, etc, staples of the software world, beautifully hand crafted
+		by developers who actually care (because they had too!). If they didn't care about their software and took shortcuts, their software
+		would suffer as a result. A stark contrast to today, where most developers are most concerned with their "industry standards", and "design patterns".
+	  </p>
       <h4>Conclusion</h4>
       <p>
-	Do it yourself. Only use what you need. Take ownership of your work.
+		Do it yourself. Only use what you need. Take ownership of your work.
       </p>
       <p>
-	It's really a beautiful and unique way to approach software, and to an extent, your life.
-	I find much more gratification and self purpose when I solve my own problems indepdent of pre-existing solutions
-	(obviously you can still take inspiration from others).
-	The world would be a much better place if we focused more on what we need vs. what we want. This is especially powerful
-	in software, but can also be applied to how your own happiness. Finally, taking ownership and responsibility of your
-	work will make you better at the work, and also, a more pragmatic person overall. 
+		It's really a beautiful and unique way to approach software, and to an extent, your life.
+		I find much more gratification and self purpose when I solve my own problems indepdent of pre-existing solutions. This isn't meant to scare people from taking inspiration or even copying existing solutions. But rather meant to inspire a sort of creative, and exploratory spark. Even if you were to copy an algorithm or program from an existing one,
+		I still bet you'll know it far better than anyone who simply installs it.
+		The world would be a much better place if we focused more on what we need vs. what we want. This is especially powerful
+		in software, but can also be applied to how you view the world. Finally, taking ownership and responsibility of your
+		work will make you better at the work, and also, a more pragmatic person overall. Putting it all together, you can find the undeniable power of self-sufficieny and proficiency.
       </p>
     </main>
     <footer>
       <hr>
       <p>
-	Copyright &copy; Rawley Fowler 2022
+		Copyright &copy; Rawley Fowler 2022
       </p>
       <p>
-	<b>Disclaimer</b>: All opinions on this site, are that of my own. They do not
-	reflect the opinions of any of my employers; past, present, or future.
+		<b>Disclaimer</b>: All opinions on this site, are that of my own. They do not
+		reflect the opinions of any of my employers; past, present, or future.
       </p>
     </footer>
   </body>
