@@ -1,10 +1,18 @@
 body {
     font-size: calc(14px + 0.11vw);
-    width: clamp(373px, 45vw, 50vw);
-    color: black;
+    width: clamp(373px, 60vw, 80vw);
+    color: #222222;
     margin: auto;
     padding: 2px;
     font-family: 'Helvetica Neue', 'Arial Nova', sans-serif;
+}
+
+a {
+	color: teal;
+}
+
+a:visited {
+	color: darkgreen;
 }
 
 nav {
@@ -27,10 +35,18 @@ nav > * {
 
 @media (prefers-color-scheme: dark) {
     html {
-	background-color: #222222;
+		background-color: #222222;
     }
     
-    body * {
-	color: lightgrey;
+    body, body * {
+		color: lightgrey;
     }
+
+	a {
+		color: lightyellow;
+	}
+
+	a:visited {
+		color: cyan;
+	}
 }
