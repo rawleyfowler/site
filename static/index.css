@@ -1,10 +1,16 @@
+code {
+	color: #ebdbb2;
+	background-color: #282828;
+	padding: 2px;
+}
+
 body {
-    font-size: calc(14px + 0.11vw);
-    width: clamp(373px, 60vw, 80vw);
-    color: #222222;
-    margin: auto;
-    padding: 2px;
-    font-family: 'Helvetica Neue', 'Arial Nova', sans-serif;
+	font-size: calc(14px + 0.11vw);
+	width: clamp(373px, 60vw, 80vw);
+	color: #222222;
+	margin: auto;
+	padding: 2px;
+	font-family: 'Helvetica Neue', 'Arial Nova', sans-serif;
 }
 
 a {
@@ -16,31 +22,31 @@ a:visited {
 }
 
 nav {
-    font-size: calc(16px + 0.33vh);
-    display: flex;
-    flex-direction: row;
-    list-style-type: none;
+	font-size: calc(16px + 0.33vh);
+	display: flex;
+	flex-direction: row;
+	list-style-type: none;
 }
 
 nav > * {
-    margin-right: 33px;
+	margin-right: 33px;
 }
 
 .link-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 3px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-bottom: 3px;
 }
 
 @media (prefers-color-scheme: dark) {
-    html {
+	html {
 		background-color: #222222;
-    }
-    
-    body, body * {
+	}
+
+	body, body * {
 		color: lightgrey;
-    }
+	}
 
 	a {
 		color: lightyellow;
