@@ -6,7 +6,6 @@ let render ~posts =
   The ramblings of a mad man.
   I have an <a href="/blog/rss.xml">RSS feed</a> too.
   </p>
-  <br>
   </div>
 % posts |> List.iter begin fun (post : Blog_post.t) ->
   <div class="link-wrapper">
