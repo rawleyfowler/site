@@ -1,8 +1,8 @@
 open Lwt.Infix
 
-let () = Lwt_main.run @@ Database.create_blog_post_table () >>= function
+let () = Lwt_main.run (Database.create_blog_post_table () >>= function
   | Ok () -> Lwt_io.print "Database initialized successfully.\n"
-  | Error e -> failwith (Caqti_error.show e)
+  | Error e -> failwith (Caqti_error.show e))
 
 let () =
   Dream.run
