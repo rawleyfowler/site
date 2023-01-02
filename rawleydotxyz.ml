@@ -1,13 +1,9 @@
 open Lwt.Infix
+open Lwt.Syntax
 
-let db_created = ref true
-
-let _ = Database.create_blog_post_table () >>= function
+let () = Lwt_main.run @@ Database.create_blog_post_table () >>= function
   | Ok () -> Lwt_io.print "Database initialized successfully.\n"
-  | Error _ -> Lwt.return (db_created := false)
-
-let () = Unix.sleepf 2.0
-let () = if not !db_created then failwith "Could not initialize database"
+  | Error e -> failwith (Caqti_error.show e)
 
 let () =
   Dream.run
