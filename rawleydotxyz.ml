@@ -1,5 +1,4 @@
 open Lwt.Infix
-open Lwt.Syntax
 
 let () = Lwt_main.run @@ Database.create_blog_post_table () >>= function
   | Ok () -> Lwt_io.print "Database initialized successfully.\n"
