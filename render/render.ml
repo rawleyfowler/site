@@ -19,7 +19,7 @@ let header_template =
     <body>
     <header>
     <h1>
-    <a href="/">/home/rawley.xyz</a>
+    <a href="/">Rawley.xyz</a>
     </h1>
     <nav>
     <li>
@@ -81,7 +81,7 @@ let render_page content =
     header_template
     content
     footer_template
-  
+
 let generate_link (p : Blog_post.t) =
   Printf.sprintf
     {eos|<div class="link-wrapper">
@@ -154,11 +154,11 @@ let render_blog_post ~slug =
   | Ok p_opt ->
     begin match p_opt with
     | None -> handle_not_found ()
-    | Some p -> 
+    | Some p ->
       Dream.html @@ Post_layout.render ~title:p.title ~body:p.content ~tags:[p.title]
   end
   | Error e -> handle_error e
-  
 
-let render_index () = 
+
+let render_index () =
   render_simple (module Index)

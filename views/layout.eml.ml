@@ -10,7 +10,7 @@ let render body =
   <body>
   <header>
   <h1>
-  <a href="/">/home/rawley.xyz</a>
+  <a href="/">Rawley.xyz</a>
   </h1>
   <nav>
   <li>
@@ -36,7 +36,7 @@ let render body =
   Copyright &copy; Rawley Fowler 2022
   </p>
   <p>
-  <b>Disclaimer</b>: All opinions on this site, are that of my own. They do not reflect the opinions of 
+  <b>Disclaimer</b>: All opinions on this site, are that of my own. They do not reflect the opinions of
   any of my employers; past, present, or future.
   </p>
   </footer>
