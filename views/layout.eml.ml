@@ -28,7 +28,6 @@ let render body =
   <li>
   <a href="/bookshelf">bookshelf</a>
   </li>
-
   </nav>
   </header>
   <main>

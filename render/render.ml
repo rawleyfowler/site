@@ -34,6 +34,9 @@ let header_template =
     <li>
     <a href="/web-ring">web ring</a>
     </li>
+    <li>
+    <a href="/bookshelf">bookshelf</a>
+    </li>
     </nav>
     </header>
     <main>|eos}
