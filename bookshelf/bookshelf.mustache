@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Rawley.xyz, Rawley Fowler's web ring">
+    <title>rawley.xyz/web-ring</title>
+    <link href="/static/index.css" rel="stylesheet">
+    <style>
+      main a {
+	  text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>
+	<a href="/">Rawley.xyz</a>
+      </h1>
+      <nav>
+	<li>
+	  <a href="/blog">blog</a>
+	</li>
+	<li>
+	  <a href="/resume">resume</a>
+	</li>
+	<li>
+	  <a href="/philosophy">philosophy</a>
+	</li>
+	<li>
+	  <a href="/web-ring">web ring</a>
+	</li>
+  <li>
+    <a href="/bookshelf">bookshelf</a>
+  </li>
+    </nav>
+    </header>
+    <main>
+      <p>Here is a list of books I have read, in no particular order.</p>
+      <div>
+        {{#books}}
+        <p>
+        <a href="{{href}}">{{name}}</a> by {{author}}. <b>Rating</b>: {{rating}}
+        </p>
+        {{/books}}
+      </div>
+    </main>
+    <footer>
+      <hr>
+      <p>
+	Copyright &copy; Rawley Fowler 2022
+      </p>
+      <p>
+	<b>Disclaimer</b>: All opinions on this site, are that of my own. They do not
+	reflect the opinions of any of my employers; past, present, or future.
+      </p>
+    </footer>
+  </body>
+</html>

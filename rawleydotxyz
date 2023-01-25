@@ -1,0 +1,4 @@
+#!/bin/bash
+
+"$(pwd)/_esy/default/build/default/rawleydotxyz.exe" &
+raku "$(pwd)/bookshelf/bookshelf.raku" &
