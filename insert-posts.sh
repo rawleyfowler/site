@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# This is free-software, and a part of github.com/rawleyfowler/rawleydotxyz
+# NOTE: This will most likely be replaced by a Perl or Raku script at some point.
 function usage() {
 	echo "Usage: insert-posts"
 	echo "Tool for inserting posts into a SQLite3 database."
@@ -29,7 +30,7 @@ function update_post() {
     local status="$?"
 
     [[ "$status" = "0" ]] && echo "Successfully updated already existing post: $slug" && return
-    echo "Failed to update, or insert post: $slug."
+    >&2 echo "Failed to update, or insert post: $slug."
 }
 
 # params -> slug, title, content, date
