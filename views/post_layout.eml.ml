@@ -28,6 +28,9 @@ let render ~title ~tags ~body =
   <li>
   <a href="/web-ring">web ring</a>
   </li>
+  <li>
+  <a href="/bookshelf">bookshelf</a>
+  </li>
   </nav>
   </header>
   <main>
