@@ -10,3 +10,4 @@ posts/*.post
 \#*
 .DS_Store
 bookshelf.txt
+site.db*
