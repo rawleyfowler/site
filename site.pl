@@ -3,7 +3,6 @@ use 5.016;
 
 use Mojolicious::Lite -signatures;
 use Mojo::SQLite;
-use Data::Dumper;
 
 my $sql = Mojo::SQLite->new('sqlite:site.db');
 helper db => sub { state $db = $sql->db };
@@ -46,8 +45,6 @@ get '/blog/:post' => sub {
         [ 'title', 'content', 'slug' ],
         { slug => $c->param('post') }
     )->hash;
-
-    print( Dumper $post );
 
     return $c->render( template => 'not_found' ) unless $post;
 
