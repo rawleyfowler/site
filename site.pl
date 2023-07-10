@@ -3,6 +3,10 @@ use 5.016;
 
 use Mojolicious::Lite -signatures;
 use Mojo::SQLite;
+use Carp qw(croak);
+
+croak qq{No AUTH_HEADER value in environment.} unless exists $ENV{AUTH_HEADER};
+croak qq{No AUTH_KEY value in environment.}    unless exists $ENV{AUTH_KEY};
 
 my $sql = Mojo::SQLite->new('sqlite:site.db');
 helper db => sub { state $db = $sql->db };
@@ -46,10 +50,20 @@ get '/blog/:post' => sub {
         { slug => $c->param('post') }
     )->hash;
 
-    return $c->render( template => 'not_found' ) unless $post;
+    return $c->render( template => 'not_found', status => 404 ) unless $post;
 
     $c->stash( post => $post );
     $c->render( template => 'post' );
+};
+
+post '/blog' => sub {
+    my $c    = shift;
+    my $auth = $c->req->headers->to_hash->{ $ENV{AUTH_HEADER} };
+    return $c->rendered(400) unless $auth and ( $auth eq $ENV{AUTH_KEY} );
+
+    $c->db->insert( 'posts', $c->req->json );
+
+    $c->rendered(204);
 };
 
 app->start;
@@ -69,9 +83,39 @@ __DATA__
   % use Text::Markdown qw(markdown);
   <!DOCTYPE html>
   <html lang="en" data-bs-theme="dark">
-  %= include '_header', title => $post->{title}
+  <head>
+  <title><%= $post->{title} %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  <link href="/post.css" rel="stylesheet">
+  <style>
+  body * {
+    font-size: calc(0.33vw + 13px);
+  }
+  h2 {
+    font-size: calc(24px + 0.33vw);
+  }
+  h3 {
+    font-size: calc(20px + 0.33vw);
+  }
+  h4 {
+    font-size: calc(18px + 0.33vw);
+  }
+  h5, h6 {
+    font-size: calc(16px + 0.33vw);
+  }
+
+  h2, h3, h4, h5, h6 {
+    font-weight: 300;
+  }
+  </style>
+  </head>
   <body class="container fw-light">
-  %= include '_nav'
+  <div class="mt-3">
+  <a href="/blog"><< Go Back</a>
+  </div>
   <h1 class="mt-3 display-2"><%= $post->{title} %></h1>
   <div>
   <%== markdown($post->{content}) %>
@@ -104,6 +148,7 @@ __DATA__
         <div><%= $_->{created_at} %></div>
     </div>
   % }
+  %= include '_footer'
   </body>
   </html>
 
@@ -114,13 +159,21 @@ __DATA__
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  
   <style>
   body * {
     font-size: calc(0.33vw + 12px);
   }
   </style>
   </head>
-
+  
+@@ _footer.html.ep
+  <div class="mt-5">Rawley.xyz is powered by:</div>
+  <footer class="d-flex flex-row flex-wrap mt-3 mb-5">
+  <a href="https://www.perl.org"><img class="me-3" width="80" height="80" src="/perl.png" alt="The Perl Programming Language" /></a>
+  <a href="https://www.alpinelinux.org"><img width="80" height="80" src="/alpine.png" alt="Alpine Linux" /></a>
+  </footer>
+  
 @@ _nav.html.ep
   <nav class="d-flex flex-row text-decoration-none mt-3">
   <div class="me-3">
