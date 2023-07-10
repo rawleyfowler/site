@@ -61,9 +61,17 @@ post '/blog' => sub {
     my $auth = $c->req->headers->to_hash->{ $ENV{AUTH_HEADER} };
     return $c->rendered(400) unless $auth and ( $auth eq $ENV{AUTH_KEY} );
 
-    $c->db->insert( 'posts', $c->req->json );
-
-    $c->rendered(204);
+    if ( my $old_post =
+        $c->db->select( 'posts', ['id'], { slug => $c->req->json->{slug} } )
+        ->hash )
+    {
+        $c->db->update( 'posts', $c->req->json, { id => $old_post->{id} } );
+        $c->rendered(204);
+    }
+    else {
+        $c->db->insert( 'posts', $c->req->json );
+        $c->rendered(201);
+    }
 };
 
 app->start;
