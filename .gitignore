@@ -12,3 +12,4 @@ posts/*.post
 bookshelf.txt
 site.db*
 less/cache/
+*.secret
