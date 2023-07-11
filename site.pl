@@ -6,12 +6,6 @@ use Mojo::SQLite;
 use Mojo::File;
 use Carp qw(croak);
 
-my $AUTH_HEADER = [ split( /,/, Mojo::File->new('.secret')->slurp ) ]->[0];
-my $AUTH_KEY    = [ split( /,/, Mojo::File->new('.secret')->slurp ) ]->[1];
-
-croak qq{No AUTH_HEADER value in .secret} unless $AUTH_HEADER;
-croak qq{No AUTH_KEY value in .secret}    unless $AUTH_KEY;
-
 my $sql = Mojo::SQLite->new('sqlite:site.db');
 helper db => sub { state $db = $sql->db };
 
@@ -58,24 +52,6 @@ get '/blog/:post' => sub {
 
     $c->stash( post => $post );
     $c->render( template => 'post' );
-};
-
-post '/blog' => sub {
-    my $c    = shift;
-    my $auth = $c->req->headers->to_hash->{$AUTH_HEADER};
-    return $c->rendered(400) unless $auth and ( $auth eq $AUTH_KEY );
-
-    if ( my $old_post =
-        $c->db->select( 'posts', ['id'], { slug => $c->req->json->{slug} } )
-        ->hash )
-    {
-        $c->db->update( 'posts', $c->req->json, { id => $old_post->{id} } );
-        $c->rendered(204);
-    }
-    else {
-        $c->db->insert( 'posts', $c->req->json );
-        $c->rendered(201);
-    }
 };
 
 app->start;

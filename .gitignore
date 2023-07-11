@@ -5,6 +5,7 @@ esy.lock/
 *.db
 *.pem
 *~
+posts/*
 posts/*.blog
 posts/*.post
 \#*
