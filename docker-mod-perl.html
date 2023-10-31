@@ -1,0 +1,143 @@
+<html>
+    <head>
+        <title>Running mod_perl with Mojolicious in Docker</title>
+        <meta name="description" content="Running Apache mod_perl and Mojolicious in Docker">
+        <meta name="keywords" content="mojolicious mojo mod_perl docker apache">
+        <meta charset="UTF-8">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: rgb(254, 249, 232)">
+        <div style="margin: 48px; width: 530px;">
+            <a href="/">&lt;&lt; back</a>        
+            <h1 id="running-mod_perl-with-mojolicious-in-docker">Running mod_perl with Mojolicious in Docker</h1>
+            <p>
+                I've been working under an old Apache <code>mod_perl</code> setup. I wanted to use Mojolicious for some new services,
+                but I needed to stay within <code>mod_perl</code>, so I decided to go all the way and Dockerize it. After scouring the <code>mod_perl</code> documentation,
+                Plack + Mojolicious configs, and finding an image, I hit the ground running and documented my steps.
+            </p>
+            <a href="http://perl.apache.org/">
+                <img src="mod_perl.gif" alt="mod_perl banner" />
+            </a>
+            <p>I love old banners :)</p>
+            <h3 id="generate-your-config">Generate your config</h3>
+            <p>Thanks to <a href="https://github.com/motemen/docker-mod_perl">motemen</a> for some nicely pre-configured
+                <code>mod_perl</code> and <code>Apache2</code> images. We're targetting <code>Perl v5.36</code>, and <code>Apache 2.4.58</code> here.
+                We'll also add the include statement for our <code>VirtualHost</code> configuration file that we'll make later.
+            </p>
+            <pre>
+<code>docker <span class="hljs-keyword">run</span> --<span class="hljs-keyword">rm</span> motemen/mod_perl:5.36.0-2.4.58 <span class="hljs-keyword">cat</span> /usr/<span class="hljs-keyword">local</span>/apache2/<span class="hljs-keyword">conf</span>/httpd.<span class="hljs-keyword">conf</span> &gt; httpd.<span class="hljs-keyword">conf</span>
+echo '<span class="hljs-keyword">Include</span> /usr/<span class="hljs-keyword">local</span>/apache2/<span class="hljs-keyword">conf</span>/mojolicious.<span class="hljs-keyword">conf</span>' &gt;&gt; httpd.<span class="hljs-keyword">conf</span>
+                </code>
+            </pre>
+            <p>
+                This will leave you with a <code>httpd.conf</code> that will get picked up by Apache when we run it under docker.
+            </p>
+            <h3 id="enable-prefork-mpm-instead-of-event-mpm">Enable Prefork MPM instead of Event MPM</h3>
+            <p>
+                I couldn't get Apache to run without disabling Event MPM and enabling Prefork MPM.
+            </p>
+            <p>In <code>httpd.conf</code>:</p>
+            <pre>
+                <code>
+<span class="hljs-selector-id">#LoadModule</span> mpm_event_module modules/mod_mpm_event<span class="hljs-selector-class">.so</span>
+LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+                </code>
+            </pre>
+            <h3 id="write-your-application">Write your application</h3>
+            <p>
+                All you need to do is write a Mojo application. In this case, I'm using <code>Mojolicious::Lite</code> but this can
+                be done with the whole MVC setup easily as well. Just make sure you have a sub that returns your <code>app</code> so you can
+                pass it to <code>Plack::Builder</code>.
+            </p>
+            <p>In <code>lib/App.pm</code>:</p>
+            <pre>
+                <code class="lang-perl">
+<span class="hljs-keyword">package</span> App;
+<span class="hljs-keyword">use</span> <span class="hljs-number">5.036</span>;
+<span class="hljs-keyword">use</span> Mojolicious::Lite -signatures;
+
+<span class="hljs-function"><span class="hljs-keyword">sub</span> <span class="hljs-title">get_app</span> </span>{ app; }
+
+get <span class="hljs-string">'/'</span> =&gt; <span class="hljs-function"><span class="hljs-keyword">sub</span> </span>{
+    <span class="hljs-keyword">shift</span>-&gt;render( <span class="hljs-string">text =&gt;</span> <span class="hljs-string">"Hello World!"</span> );
+};
+
+<span class="hljs-number">1</span>;
+                </code></pre>
+            <h3 id="write-your-plack-shim">Write your Plack shim</h3>
+            <p>
+                Here we write a simple <code>.psgi</code> file that
+                will use our <code>App</code> library and <code>Plack::Builder</code> to
+                create a <code>PSGI</code> application for <code>Plack::Handler::Apache2</code> to pickup.
+            </p>
+            <p>In <code>app.psgi</code>:</p>
+            <pre>
+<code>use <span class="hljs-number">5.036</span>;
+
+use <span class="hljs-class"><span class="hljs-keyword">lib</span> '<span class="hljs-title">lib</span>';</span>
+use App;
+use Plack::Builder;
+
+builder {
+    <span class="hljs-symbol">App:</span>:get_app-&gt;start;
+};
+                </code>
+            </pre>
+            <h3 id="write-your-mod_perl-apache-conf">Write your mod_perl Apache config</h3>
+            <p>
+                Very straight-forward, just tell Apache where to find our script, and what handler to use.
+            </p>
+            <p>In <code>mojolicious.conf</code>:</p>
+            <pre>
+                <code>
+<span class="hljs-attribute"><span class="hljs-nomarkup">LoadModule</span></span> perl_module modules/mod_perl.so
+
+<span class="hljs-section">&lt;VirtualHost *:80&gt;</span>
+<span class="hljs-section">&lt;Location /&gt;</span>
+<span class="hljs-attribute"><span class="hljs-nomarkup">SetHandler</span></span> perl-script
+<span class="hljs-attribute">PerlResponseHandler</span> Plack::Handler::Apache2
+<span class="hljs-attribute">PerlSetVar</span> psgi_app /app.psgi
+<span class="hljs-section">&lt;/Location&gt;</span>
+<span class="hljs-section">&lt;/VirtualHost&gt;</span>
+                </code>
+            </pre>
+
+            <h3 id="write-your-dockerfile">Write your Dockerfile</h3>
+            <p>
+                Now all thats left is making a <code>Dockerfile</code>.
+                We'll use one of <a href="https://github.com/motemen/docker-mod_perl">motemen</a>'s images,
+                and copy all of the pre-reqs over, install some libraries, you know, Docker stuff.
+            </p>
+            <p>In <code>Dockerfile</code>:</p>
+            <pre>
+                <code class="lang-docker">
+<span class="hljs-keyword">FROM</span> motemen/mod_perl:<span class="hljs-number">5.36</span>.<span class="hljs-number">0</span>-<span class="hljs-number">2.4</span>.<span class="hljs-number">58</span>-<span class="hljs-number">2.0</span>.<span class="hljs-number">13</span>
+<span class="hljs-keyword">COPY</span><span class="bash"> app.psgi /app.psgi
+</span><span class="hljs-keyword">COPY</span><span class="bash"> lib /usr/<span class="hljs-built_in">local</span>/apache2/lib
+</span><span class="hljs-keyword">COPY</span><span class="bash"> httpd.conf /usr/<span class="hljs-built_in">local</span>/apache2/conf/httpd.conf
+</span><span class="hljs-keyword">COPY</span><span class="bash"> mojolicious.conf /usr/<span class="hljs-built_in">local</span>/apache2/conf/mojolicious.conf
+</span><span class="hljs-keyword">RUN</span><span class="bash"> apt-get update -y &amp;&amp; apt-get install -y wget make build-essential
+</span><span class="hljs-keyword">RUN</span><span class="bash"> cpan -iT Plack Mojolicious
+</span><span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">80</span>
+<span class="hljs-keyword">CMD</span><span class="bash"> [<span class="hljs-string">"httpd-foreground"</span>]</span>
+                </code>
+            </pre>
+
+<h3 id="run-with-docker">Run with Docker</h3>
+<p>Now we can make it go!</p>
+            <pre>
+<code class="lang-shell"><span class="hljs-symbol">$</span> docker build . -t <span class="hljs-built-in">mod</span>-perl
+<span class="hljs-symbol">$</span> docker run -p <span class="hljs-number">80</span>:<span class="hljs-number">80</span> <span class="hljs-built-in">mod</span>-perl
+<span class="hljs-symbol">$</span> curl http:<span class="hljs-comment">//localhost:80/</span>
+
+"Hello World!"
+                </code>
+            </pre>
+            <h3 id="running-with-auto-reloading-for-development-">Running with auto-reloading (for development)</h3>
+            <p>You can make this auto-reload if you use a docker volume for <code>lib/</code> against <code>/usr/local/apache2/lib/</code></p>
+            <h3 id="source-code">An example?</h3>
+            <p>
+                An <a href="https://github.com/rawleyfowler/mojolicious-mod-perl-example">example</a> is available on my github.
+            </p>
+        </div>
+    </body>
+</html>
