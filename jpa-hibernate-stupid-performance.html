@@ -20,25 +20,24 @@
             </p>
             <h2 id="go-fast">Time to go fast</h2>
             <p>
-              By enabling <pre><code>logging.level.org.hibernate.SQL=DEBUG</code></pre> and <pre><code>logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE</code></pre>,
+              By enabling <pre><code>logging.level.org.hibernate.SQL=DEBUG</code></pre> and <pre><code>logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE</code></pre>
               you're able to see the ridiculous number queries JPA is executing, they're un-countable, there's so many!! How can we fix this?
             </p>
             <p>
-              If you're thinking of using <pre><code>@Batch(100)</code></pre>, it could work, only issue is JPA will batch each relationship, so each of our tables will still require
-              <pre><code>n/100</code></pre> calls where <pre><code>n</code></pre> is the number of rows with relationships. So theoretically a 100x speed bump right? Well, it's actually more
+              If you're thinking of using <code>@Batch(100)</code>, it could work, only issue is JPA will batch each relationship, so each of our tables will still require
+              <code>n/100</code> calls where <code>n</code> is the number of rows with relationships. So theoretically a 100x speed bump right? Well, it's actually more
               like a 33x performance bump, since you still have the overhead of making the database connections, and need to get a lock every time you select. Doing this we moved to around
               3-5 minutes depending on load per large call. This however, was still unacceptable.
             </p>
             <p>
-              What if instead we just forced JPA to use <pre><code>OUTER JOIN</code></pre>? Isn't that exactly what the ANSI SQL wizards would tell you to do?
+              What if instead we just forced JPA to use <code>OUTER JOIN</code>? Isn't that exactly what the ANSI SQL wizards would tell you to do?
               Obviously, this is the solution, one single connection, 1 lock, and let the B-Tree optimizations inside of the database handle all of this ugliness for us.
-              To do this you need to use something called <a href="https://www.baeldung.com/jpa-entity-graph"><pre><code>@EntityGraph</code></pre></a>
-              on your JPA repository, what this does is forces JPA to use a <pre><code>OUTER JOIN</code></pre>
+              To do this you need to use something called <a href="https://www.baeldung.com/jpa-entity-graph"><code>@EntityGraph</code></a>
+              on your JPA repository, what this does is forces JPA to use a <code>OUTER JOIN</code>
               to join relationships. This even works on nested entities, say I have Entity A with a child B which also has a One-to-Many on C, all you need to do
-              is add the relationship to the entity graph with the <pre><code>@NamedEntityGraph</code></pre> annotation, then provide it with a few nice args like name,
+              is add the relationship to the entity graph with the <code>@NamedEntityGraph</code> annotation, then provide it with a few nice args like name,
               and attributeNodes which will point to your sub entity. Then finally on your JPA repository call you stitch the entity graph back together.
             </p>
-            <p>
               <pre>
                 <code>
 @Repository
@@ -49,7 +48,6 @@ public interface ARepository extends JpaRepository<A, UUID>, JpaSpecificationExe
 }
                 </code>
               </pre>
-            </p>
             <p>
               After applying these, the query time went down from 15 minutes to ... *drum-roll* ... 3 seconds. So please, for the love of all that is computationally efficient, force your JPA
               to use <pre><code>OUTER JOIN</code></pre>, or even roll your own SQL, ORM's really are one of the biggest trade-offs, and they really can bite you. This is why tend to
