@@ -50,8 +50,8 @@ public interface ARepository extends JpaRepository<A, UUID>, JpaSpecificationExe
               </pre>
             <p>
               After applying these, the query time went down from 15 minutes to ... *drum-roll* ... 3 seconds. So please, for the love of all that is computationally efficient, force your JPA
-              to use <pre><code>OUTER JOIN</code></pre>, or even roll your own SQL, ORM's really are one of the biggest trade-offs, and they really can bite you. This is why tend to
-              stay in the <pre><code>DBI</code></pre> universe when I write Perl. It's funny shocking Ruby on Rails and Java developers with my ~15ms queries :D
+              to use <code>OUTER JOIN</code>, or even roll your own SQL, ORM's really are one of the biggest trade-offs, and they really can bite you. This is why tend to
+              stay in the <code>DBI</code> universe when I write Perl. It's funny shocking Ruby on Rails and Java developers with my ~15ms queries :D
             </p>
             <br>
             <br>
