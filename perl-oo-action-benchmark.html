@@ -9,50 +9,114 @@
             <a href="/">&lt;&lt; back</a>
             <h1>Perl OO benchmarking</h1>
             <p>
-              I've spent a lot of time working in projects that use the <a href="https://en.wikipedia.org/wiki/Command_pattern"><code>Action pattern</code></a> (also called the <code>Command pattern</code>).
-              Now, regardless of how i've land on OO vs Functional in the last 5 years, there has always been a question I have yet to answer: "How much does this abstraction cost,
-              and more importantly, how much does object instantiation actually cost?" (since the action pattern has you instantiating A LOT of objects)
+                I've spent a lot of time working in projects that use the <a href="https://en.wikipedia.org/wiki/Command_pattern"><code>Action pattern</code></a> (also called the <code>Command pattern</code>).
+                Now, regardless of how i've land on OO vs Functional in the last 5 years, there has always been a question I have yet to answer: "How much does this abstraction cost,
+                and more importantly, how much does object instantiation actually cost?" (since the action pattern has you instantiating A LOT of objects)
             </p>
             <p>
-              So I set out to benchmark, Perl OO, using the traditional Module OO, <code>Corinna</code>, <code>Moo</code> and <code>Moose</code>. But I thought it may also
-              provide some value to compare these findings to other languages, namely ones in the same sort of realm that Perl has lives in: <code>Ruby</code> and <code>Raku (formerly Perl 6)</code>.
+                So I set out to benchmark, Perl OO, using the traditional Module OO, <code>Corinna</code>, <code>Moo</code> and <code>Moose</code>. But I thought it may also
+                provide some value to compare these findings to other languages, namely ones in the same sort of realm that Perl has lives in: <code>Ruby</code> and <code>Raku (formerly Perl 6)</code>.
             </p>
             <h2 id="theBenchmark">The benchmark</h2>
             <p>
-              The benchmark is fairly simple, since the goal here is to test the actual instantiation costs, so the method associated with the implemented action is very simple.
-              An <code>Action</code> object has two members, <code>name</code> and <code>age</code>. It's <code>execute</code> method returns a Map/Hash/Dictionary, with the following keys
-              <code>{ name => self.name, age => self.age }</code>. Basically just accessing the instantiated objects <code>age</code> and <code>name</code> attributes, and associating them to
-              keys of the same name.
+                The benchmark is fairly simple, since the goal here is to test the actual instantiation costs, so the method associated with the implemented action is very simple.
+                An <code>Action</code> object has two members, <code>name</code> and <code>age</code>. It's <code>execute</code> method returns a Map/Hash/Dictionary, with the following keys
+                <code>{ name => self.name, age => self.age }</code>. Basically just accessing the instantiated objects <code>age</code> and <code>name</code> attributes, and associating them to
+                keys of the same name.
             </p>
             <p>
-              One-million <code>Action</code> objects will be instantiated in a O(n) loop, and executed, then destroyed all within the same scope. Like so:
+                One-million <code>Action</code> objects will be instantiated in a O(n) loop, and executed, then destroyed all within the same scope. Like so:
             </p>
             <pre>
-              <code>
+                <code>
 my $name = 'Tim';
 my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( name => $name, name => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>
-              This will be performed one-hundred times, then, the average of the times taken to do the one-million iterations will be the benchmark result.
-              It is also important to note that the initial load-time of the language run-times is included in the calculation, though they are mostly negligble especially
-              in the Perl case, and the actual instantiation takes the vast-majority of the time (close to 99% on average).
+                This will be performed one-hundred times, then, the average of the times taken to do the one-million iterations will be the benchmark result.
+                It is also important to note that the initial load-time of the language run-times is included in the calculation, though they are mostly negligble especially
+                in the Perl case, and the actual instantiation takes the vast-majority of the time (close to 99% on average).
             </p>
             <p>
-              This benchmark was performed on an Intel i7 12700KF, using DDR5 memory.
+                This benchmark was performed on an Intel i7 12700KF, using DDR5 memory.
             </p>
+            <h3>Summary Table</h3>
+            <table style="border: 1px solid black;">
+                <tr>
+                    <th style="text-align: left;">Language</th>
+                    <th style="text-align: left;">Performance</th>
+                </tr>
+
+                <tr>
+                    <td>
+                        Perl Module OO
+                    </td>
+                    <td>
+                        454.627ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Perl Module OO + Types
+                    </td>
+                    <td>
+                        505.276ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Moo
+                    </td>
+                    <td>
+                        960.03ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Moo + Types
+                    </td>
+                    <td>
+                        2308.226ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Moose
+                    </td>
+                    <td>
+                        11420.455ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Moose + Types
+                    </td>
+                    <td>
+                        13649.37ms
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ruby</td>
+                    <td>167.627ms</td>
+                </tr>
+                <tr>
+                    <td>Raku (MoarVM start-up subtracted)</td>
+                    <td>801.947ms</td>
+                </tr>
+            </table>
             <h2 id="timesAndImplementations">Times and implementations</h2>
             <h3 id="perlImpls">Perl</h3>
             <h4 id="perlModuleOO">Module OO</h4>
             <p>
-              Using the traditional Perl approach to OO using ref's and modules, is by far the fastest.
+                Using the traditional Perl approach to OO using ref's and modules, is by far the fastest.
             </p>
             <h5>Code:</h5>
             <pre>
-              <code>
+                <code>
 package Action;
 
 use strict;
@@ -81,26 +145,26 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( $name, $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>
-              This implementation is alright, it's fast, but it doesn't provide any validations, which is what I assume most OO frameworks like <code>Moo</code> and <code>Moose</code> do, especially
-              if you use modules like <code>Type::Tiny</code>.
+                This implementation is alright, it's fast, but it doesn't provide any validations, which is what I assume most OO frameworks like <code>Moo</code> and <code>Moose</code> do, especially
+                if you use modules like <code>Type::Tiny</code>.
             </p>
             <h5>Time:</h5>
             <pre>
-              <code>
+                <code>
 PERL TIME : 454.627ms
-              </code>
+                </code>
             </pre>
             <h4 id="perlModuleOOTypes">Module OO with some type checks</h4>
             <p>
-              Considering my assumptions about other OO libraries I decided to add a few checks to the Module OO implementation,
-              using <code>Scalar::Util</code> we can test if <code>age</code> is a number, and also ensure the defined-ness of our
-              attributes using the built-in <code>defined</code>.
+                Considering my assumptions about other OO libraries I decided to add a few checks to the Module OO implementation,
+                using <code>Scalar::Util</code> we can test if <code>age</code> is a number, and also ensure the defined-ness of our
+                attributes using the built-in <code>defined</code>.
             </p>
             <pre>
-              <code>
+                <code>
 package Action;
 
 use strict;
@@ -139,22 +203,22 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( $name, $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>This only came at a net-cost of around 50ms extra on average, which is surprisingly fast.</p>
             <pre>
-              <code>
+                <code>
 PERL + TYPES TIME : 505.276ms
-              </code>
+                </code>
             </pre>
             <h5>Code:</h5>
             <h4 id="perlCorinnaModuleOO">Corinna</h4>
             <p>
-              Corinna is a new OO system added to Perl 5.38 but still marked as experimental. It performs very well compared to the features it provides,
-              but it is definitely not something you'll see in the wild too often.
+                Corinna is a new OO system added to Perl 5.38 but still marked as experimental. It performs very well compared to the features it provides,
+                but it is definitely not something you'll see in the wild too often.
             </p>
             <pre>
-              <code>
+                <code>
 use feature 'class';
 no warnings;
 
@@ -172,29 +236,29 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     Action->new( name => $name, age => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>
-              I had to disable warnings on this because I wasn't sure what flags I needed to set in the <code>feature</code> or the <code>experimental</code>,
-              also the lack of documentation definitely hurt, it took me a while to figure out I had to <code>use feature 'class';</code>. For some reason I thought
-              the feature flag was <code>corinna</code> or something.
+                I had to disable warnings on this because I wasn't sure what flags I needed to set in the <code>feature</code> or the <code>experimental</code>,
+                also the lack of documentation definitely hurt, it took me a while to figure out I had to <code>use feature 'class';</code>. For some reason I thought
+                the feature flag was <code>corinna</code> or something.
             </p>
             <h5>Time:</h5>
             <pre>
-              <code>
+                <code>
 CORINNA TIME : 564.411ms
-              </code>
+                </code>
             </pre>
             <h4 id="perlMoo">Moo</h4>
             <p>
-              <code>Moo</code> is a "Minimalist Object Orientation" for Perl. It's what I've used the most, and it performs quite well for all of the
-              features it gives you. However, there is definitely a cost, one that a lot of developers ignore. I've done two implementations here, one with
-              <code>Type::Tiny</code>, which adds optional type-checking to attributes, and one without. The difference was quite compelling!
+                <code>Moo</code> is a "Minimalist Object Orientation" for Perl. It's what I've used the most, and it performs quite well for all of the
+                features it gives you. However, there is definitely a cost, one that a lot of developers ignore. I've done two implementations here, one with
+                <code>Type::Tiny</code>, which adds optional type-checking to attributes, and one without. The difference was quite compelling!
             </p>
             <h5>Code:</h5>
             Without <code>Type::Tiny</code>:
             <pre>
-              <code>
+                <code>
 package Action;
 
 use Moo;
@@ -227,11 +291,11 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( name => $name, age => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             With <code>Type::Tiny</code>:
             <pre>
-              <code>
+                <code>
 package Action;
 
 use Moo;
@@ -267,32 +331,32 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( name => $name, age => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>
-              To my shock, <code>Type::Tiny</code> degrades performance by close to 300%. However, the more I looked into <code>Type::Tiny</code>, the more it made sense.
-              <code>Type::Tiny</code>, to enforce types uses a lot of complex meta-programming, and ref checks, that add up to a ton of extra operations. Perhaps it would be
-              worth using <code>B::Concise</code> or <code>B::Deparse</code> to see how many more operations this actually adds, but thats something for another day.
+                To my shock, <code>Type::Tiny</code> degrades performance by close to 300%. However, the more I looked into <code>Type::Tiny</code>, the more it made sense.
+                <code>Type::Tiny</code>, to enforce types uses a lot of complex meta-programming, and ref checks, that add up to a ton of extra operations. Perhaps it would be
+                worth using <code>B::Concise</code> or <code>B::Deparse</code> to see how many more operations this actually adds, but thats something for another day.
             </p>
             <h5>Time:</h5>
             <pre>
-              <code>
+                <code>
 MOO TIME         : 960.03ms
 MOO + TYPES TIME : 2308.226ms
-              </code>
+                </code>
             </pre>
             <h4 id="perlMoose">Moose</h4>
             <p>
-              <code>Moose</code> is a heavyweight, industrial purpose OO framework for Perl, at which <code>Moo</code> derives from. It is big, and heavy, and unfortunately,
-              really slow for tasks like this. After starting this benchmark, I thought that the slowness was coming from loading the module between runs, but after timing the average load time,
-              the time spent was negligble (31ms at most).
+                <code>Moose</code> is a heavyweight, industrial purpose OO framework for Perl, at which <code>Moo</code> derives from. It is big, and heavy, and unfortunately,
+                really slow for tasks like this. After starting this benchmark, I thought that the slowness was coming from loading the module between runs, but after timing the average load time,
+                the time spent was negligble (31ms at most).
             </p>
             <p>
-              Like in the <code>Moo</code> benchmark, I did two implementations, one using <code>Type::Tiny</code>, and one not.
+                Like in the <code>Moo</code> benchmark, I did two implementations, one using <code>Type::Tiny</code>, and one not.
             </p>
             <h5>Code:</h5>
             <pre>
-              <code>
+                <code>
 package Action;
 
 use Moose;
@@ -325,11 +389,11 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( name => $name, age => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             With <code>Type::Tiny</code>:
             <pre>
-              <code>
+                <code>
 package Action;
 
 use Moose;
@@ -365,29 +429,29 @@ my $age  = 12;
 for ( 1 .. 1000000 ) {
     my $user = Action->new( name => $name, age => $age )->execute();
 }
-              </code>
+                </code>
             </pre>
             <p>
-              Just like <code>Moo</code> with types, <code>Type::Tiny</code> hits the final <code>Moose</code> result by around 2000ms overall.
+                Just like <code>Moo</code> with types, <code>Type::Tiny</code> hits the final <code>Moose</code> result by around 2000ms overall.
             </p>
             <h5>Time:</h5>
             <pre>
-              <code>
+                <code>
 MOOSE TIME         : 11420.455ms
 MOOSE + TYPES TIME : 13649.37ms
-              </code>
+                </code>
             </pre>
             <h3 id="rubyImpl">Ruby</h3>
             <p>
-              I also did a quick Ruby implementation, since its a "true" Object-Oriented language, I assumed it would have
-              a lot of optimizations built-in for this sort of work, and based on its runtime, that seems to be the case.
+                I also did a quick Ruby implementation, since its a "true" Object-Oriented language, I assumed it would have
+                a lot of optimizations built-in for this sort of work, and based on its runtime, that seems to be the case.
             </p>
             <p>
-              Also, note, this was on Ruby 3.1.2, not Ruby 3.3 with YJIT, so this could theoretically be faster.
+                Also, note, this was on Ruby 3.1.2, not Ruby 3.3 with YJIT, so this could theoretically be faster.
             </p>
             <h5>Code:</h5>
             <pre>
-              <code>
+                <code>
 class Action
   def initialize(age, name)
     @age = age
@@ -404,23 +468,23 @@ name = 'Tim'
 1000000.times do
   user = Action.new(age, name).execute()
 end
-              </code>
+                </code>
             </pre>
             <h5>Time:</h5>
             <pre>
-              <code>
+                <code>
 RUBY TIME : 167.627ms
-              </code>
+                </code>
             </pre>
             <h3 id="rakuImpl">Raku (formerly Perl 6)</h3>
             <p>
-              Finally, we have Raku, which unfortunately doesn't do too well. To make this a little more competitive,
-              I subtracted the run-time of MoarVM from the end-result. Though, I think Raku's implementation is the simplest to
-              understand in terms of langauge design, so it gets a +1 from me for that.
+                Finally, we have Raku, which unfortunately doesn't do too well. To make this a little more competitive,
+                I subtracted the run-time of MoarVM from the end-result. Though, I think Raku's implementation is the simplest to
+                understand in terms of langauge design, so it gets a +1 from me for that.
             </p>
             <h5>Code:</h5>
             <pre>
-              <code>
+                <code>
 class Action {
     has $.name;
     has $.age;
@@ -436,39 +500,39 @@ for 1..1000000 -> $ {
     my $user = Action.new(name => $name, age => $age).execute();
 }
 
-              </code>
+                </code>
             </pre>
             <h5>Time (with MoarVM startup time removed):</h5>
             <pre>
-              <code>
+                <code>
 RAKU TIME : 801.947ms
-              </code>
+                </code>
             </pre>
             <h2>So what?</h2>
             <p>
-              Object instantiation has a cost. A lot of people ignore this, especially when using heavyweight libraries like <code>Moose</code>.
-              You can put this into practical terms simply, using basic Perl module OO you effectively double the number of objects of this type you can create and execute a
-              method on given any time-frame compared to <code>Moo</code> without types, and twenty-two times more objects versus <code>Moose</code> without types.
-              But these abstractions exist for reasons, and they are used for a reason.
+                Object instantiation has a cost. A lot of people ignore this, especially when using heavyweight libraries like <code>Moose</code>.
+                You can put this into practical terms simply, using basic Perl module OO you effectively double the number of objects of this type you can create and execute a
+                method on given any time-frame compared to <code>Moo</code> without types, and twenty-two times more objects versus <code>Moose</code> without types.
+                But these abstractions exist for reasons, and they are used for a reason.
             </p>
             <p>
-              <code>Moo</code> and <code>Moose</code> have their places, especially in web-applications where the number of instantiations is low, and the expensive
-              operations happen during side-effects like database operations.
-              This also goes without mentioning some of the great features modules like <code>Moo</code> and <code>Moose</code> provide.
-              It is valuable to know that if you need something to perform well, <code>Moo</code> and <code>Moose</code>
-              may incur overhead you hadn't previously considered. This is compounded when enforcing types.
-              For hot-code that will be hit repeatedly within a short amount of time, this can drastically effect performance, think of things like a landing page, or a search-bar API.
+                <code>Moo</code> and <code>Moose</code> have their places, especially in web-applications where the number of instantiations is low, and the expensive
+                operations happen during side-effects like database operations.
+                This also goes without mentioning some of the great features modules like <code>Moo</code> and <code>Moose</code> provide.
+                It is valuable to know that if you need something to perform well, <code>Moo</code> and <code>Moose</code>
+                may incur overhead you hadn't previously considered. This is compounded when enforcing types.
+                For hot-code that will be hit repeatedly within a short amount of time, this can drastically effect performance, think of things like a landing page, or a search-bar API.
             </p>
             <p>
-              <code>Corinna</code>, is a very nice prospect, it offers a lot of great things from <code>Moo</code> and <code>Moose</code> but seems to
-              exalt far less of a performance penalty. It will definitely be on my radar in the future, especially when the documentation improves.
+                <code>Corinna</code>, is a very nice prospect, it offers a lot of great things from <code>Moo</code> and <code>Moose</code> but seems to
+                exalt far less of a performance penalty. It will definitely be on my radar in the future, especially when the documentation improves.
             </p>
             <p>
-              Another approach is to simply use functions, which of course will perform the best. But, it's hard to argue to do this unless performance is the number one goal,
-              especially on codebases that follow this pattern.
+                Another approach is to simply use functions, which of course will perform the best. But, it's hard to argue to do this unless performance is the number one goal,
+                especially on codebases that follow this pattern.
             </p>
             <div>
-              You can view the <a href="https://github.com/rawleyfowler/perl-oo-action-benchmark">Source code</a>.
+                You can view the <a href="https://github.com/rawleyfowler/perl-oo-action-benchmark">Source code</a>.
             </div>
         </div>
     </body>
