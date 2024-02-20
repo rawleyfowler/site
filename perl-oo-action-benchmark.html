@@ -96,6 +96,10 @@ for ( 1 .. 1000000 ) {
                     </td>
                 </tr>
                 <tr>
+                  <td>Moose + Immutable</td>
+                  <td>1182.109ms</td>
+                </tr>
+                <tr>
                     <td>
                         Moose + Types
                     </td>
@@ -436,13 +440,25 @@ for ( 1 .. 1000000 ) {
                 </code>
             </pre>
             <p>
-                Just like <code>Moo</code> with types, <code>Type::Tiny</code> hits the final <code>Moose</code> result by around 2000ms overall.
+              Just like <code>Moo</code> with types, <code>Type::Tiny</code> hits the final <code>Moose</code> result by around 2000ms overall.
             </p>
+            <p>
+              <b>Amendment</b>: After publishing my original findings I was alerted to a <a href="https://github.com/rawleyfowler/perl-oo-action-benchmark/pull/1">setting you could apply to Moose classes</a> that make them immutable.
+              Immutable often means faster in-terms of creation but slower in terms of manipulation, but since this workload spends most of its time creating, and none of its time editing,
+              this produced an incredible 10x speed improvement.
+            </p>
+            <h5>Immutable trick for Moose</h5>
+            <pre>
+              <code>
+                __PACKAGE__->meta->make_immutable;
+              </code>
+            </pre>
             <h5>Time:</h5>
             <pre>
                 <code>
 MOOSE TIME         : 11420.455ms
 MOOSE + TYPES TIME : 13649.37ms
+MOOSE IMMU TIME    : 1182.109ms
                 </code>
             </pre>
             <h3 id="rubyImpl">Ruby</h3>
