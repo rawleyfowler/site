@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dancer2::Controllers</title>
+        <meta name="description" value="How to use Dancer2::Controllers for Perl's webframework, Dancer2.">
+        <meta name="keywords" value="Perl, Perl5, Dancer, Dancer2, Controllers, MVC, Spring-Boot">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: rgb(254, 249, 232)">
+        <div style="margin: 48px; width: 580px;">
+            <a href="/">&lt;&lt; back</a>
+            <h1>Dancer2::Controllers and Perl Attributes</h1>
+            <p>
+            Recently I created <a href="https://metacpan.org/pod/Dancer2::Controllers"><code>Dancer2::Controllers</code></a>, a simple
+            <code>Moose</code> based approach for defining routes in Dancer2. I built this as an attempt to add Spring-Boot esq annotations to
+            Dancer2.
+            </p>
+            <h2>The approach</h2>
+            <p>
+            Perl has a little know feature called "Attributes", which work as some extra arbitrary data appended to
+            the various reftypes in Perl. When you append an Attribute, Perl looks for the <code>MODIFY_&lt;reftype&gt;_ATTRIBUTES</code> in the current
+            namespace, and uses it to decide if that attribute is allowed, and lets you execute some arbitrary code as well. Perl attributes can also take "arguments".
+            These "arguments" actually are just part of the Attribute, and you need to parse the entire Attribute to get the arguments.
+            </p>
+            <p>
+            Since Perl Attributes are the closest thing I could find to annotations, I decided a generic <code>Route</code> attribute would be nice.
+            With a Perly looking argument pattern: <code>Route(get =&gt; /foo)</code>, this feels a Perl version of Spring-Boot's 
+            <code>@RequestMapping(value = "/foo", method = GET)</code>,
+            which is exactly what I was looking for.
+            </p>
+            <h2>Speed Bumps</h2>
+            <p>
+            Dancer2 is built on-top of <code>Moo</code>, unfortunately I couldn't find a nice way to handle Attributes using Moo, and inheritance. So, I settled for adding
+            <code>Moose</code> and the wonderfully helpful <code>MooseX::MethodAttributes</code> dist, which drastically simplified the work I needed to do.
+            </p>
+            <h2>In action</h2>
+            <p>The following is an example of how to use <code>Dancer2::Controllers</code></p>:
+            <pre>
+            <code>
+package My::Controller;
+
+use Moose;
+
+BEGIN { extends 'Dancer2::Controllers::Controller' }
+
+sub home_page : Route(get =&gt; /home) {
+    my $app = shift;
+    my $user_name = $app-&gt;session('user');
+    return "Welcome back $user_name!";
+}
+
+sub home_page : Route(post =&gt; /login) {
+    my $app = shift;
+    my $password = $app-&gt;body_parameters-&gt;get('password');
+    return "Here is your password: $password";
+}
+
+1;
+
+package main;
+
+use Dancer2;
+use Dancer2::Controllers;
+
+controllers([ 'My::Controller' ]);
+
+dance;
+            </code>
+            </pre>
+            <p>Thanks for reading :)</p>
+        </div> 
+    </body>
+</html>
