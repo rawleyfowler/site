@@ -5,10 +5,6 @@ esy.lock/
 *.db
 *.pem
 *~
-posts/*
-posts/*.blog
-posts/*.post
-\#*
 .DS_Store
 bookshelf.txt
 site.db*

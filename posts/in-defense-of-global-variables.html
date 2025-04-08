@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>How to Properly Use Global Variables</title>
+        <meta name="description" value="In defense of global variables. Why globals should be considered over more complex solutions. And how to use them!"/>
+    <link rel="stylesheet" href="/index.css"/></head>
+    <body>
+        <a href="/">&lt;&lt; back</a>
+        <h1>How to Properly Use Global Variables</h1>
+        <p>
+            Global variables, and global state in general have been under fire for as long as I can remember.
+            The argument is, you couple, and introduce unpredictability through managing global variables
+            since "anyone can update them". This makes sense in a cosmological world, filled with people
+            who WANT to write bad code. It's not the global variables that make code bad, it's how they're used.
+            We've spent many years inventing abstraction after abstraction, that could just be boiled down to global variables,
+            and global constants. In the end, applications will always have global state, why make it so dang difficult?
+        </p>
+        <h2>Simplicity, and avoiding traps</h2>
+        <p>
+            Globals are simple, so simple, that even the thought of using them might turn people off. It's hard to accept
+            that the simplest answer is always the best one, but it almost always is. 99% of the code I run into, is complex for the sake of "reusability", "readability", or
+            "scalability", but in the end none of these come to pass. You'll see interfaces, and abstract classes defined for single implementations,
+            horribly generic code written in obscure places, and a mess of a file structure with hundreds of files. Do you really need a generic interface for
+            each of your database tables, or what about a "service" for each "domain"? In reality, the most readable, resuable, and scalable code, is the code that
+            compiles well, and avoids mentally expensive abstraction. If I have to walk through the inheritence graph to figure out what something is doing, it's already neither
+            scalable, or readable.
+        </p>
+        <p>
+            You'll often see global variables hidden behind some "global context" like abstraction. This is down right deplorable, instead, hide your globals behind the simplest
+            abstraction on the market, the function. <code>GetDatabaseHandler()</code> is much simpler to reason about than <code>GlobalContextHolder.getSingleton().getContext("database")</code>.
+            These abstractions also, are prone to error, for instance if you use a hash-table to lookup values with a string key, what happens if I miss type the string? The compiler
+            won't catch that for you, and you'd be adding a lot of extra instructions just to access some state somewhere (which at its fastest is a pointer dereference). Another common way to do this,
+            is to pass a class object, <code>.class</code> in Java. However, this is even worse. Typically, a language will use reflection which or runtime type checks which can be extraordinarily slow.
+            To compound this, you also have no gurantees on the existence of the values, for instance, if you want a <code>DatabaseHandler</code>, and you make the request for it, you have no idea
+            if that is actually the right name or class until runtime. Contrast that with a function that will be picked up by your LSP or produce a compile-time error message.
+            Global contexts, and contexts in general are a huge mess of slow, hard to optimize code, you should avoid them at all costs.
+        </p>
+        <h2>What to do instead</h2>
+        <p>
+            As mentioned earlier, global state should exist one layer under a function. There is absolutely nothing wrong with running a <code>database.InitializeDatabase()</code> function, to
+            initialize your globals at startup, or having some sort of lazy-init built into your global accessor function. Keeping things simple is how you keep them readable, and scalable.
+            What's funny, is that's pretty much it.
+        </p>
+        <p>
+            Another thing I recommend is not accessing your globals inside of your functions, instead, pass them as arguments. This is just good-practice in general, your functions should
+            do their best to be as pure as possible. This also makes your code truly re-usable and adaptable, since you may have multiple different global variables with the same types.
+            This also makes your code easy to test, since it's not relying on any outside values existing or not.
+        </p>
+        <h2>Examples</h2>
+        <p>
+            Let's compare some code. In the first example, we'll do the traditional <code>GlobalContextHolder</code> OOP style,
+            where we literally do our best to make it look like we're not working on global variables. In the second example, we allow our globals to exist,
+            but instead of accessing them in a foolish way, we accept them as parameters.
+        </p>
+        <p>Example 1:</p>
+        <pre>
+            <code lang="java">
+public void saveUser(User u) {
+    // Where did this guy come from? Idk, it's probably defined in some XML file somewhere :)
+    DatabaseHandler dbh = GlobalContextHolder.getContext("database");
+    dbh.table("users").save(u);
+}
+
+// Main.java
+public static void main(String[] args) {
+    User user = new User("Bob", 23);
+    saveUser(user);
+}
+            </code>
+        </pre>
+        <p>Example 2:</p>
+        <pre>
+            <code lang="java">
+// Database.java
+private static DatabaseHandler DBH;
+
+public static DatabaseHandler getDatabase() {
+    if (DBH == null) {
+        DBH = DatabaseHandler.newConnection("mysql://foo@bar:foo.com:3306");
+    }
+
+    return DBH;
+}
+
+// Main.java
+public static void saveUser(User u, DatabaseHandler dbh) {
+    dbh.table("users").save(u);
+}
+
+public static void main(String[] args) {
+    Database.initialize();
+    User user = new User("Bob", 23);
+    saveUser(user, Database.get());
+}
+            </code>
+        </pre>
+        <p>
+            Overall, this drastically reduces the mental overhead of the system, allowing for simple unit-testing (if you want), and
+            a simplistic approach to scaling, since you don't have to worry about costly abstractions that don't actually simplify anything.
+        </p>
+    </body>
+</html>
