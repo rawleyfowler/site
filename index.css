@@ -1,0 +1,20 @@
+:root {
+    --fg: #222;
+    --link-fg: #116630;
+}
+
+body {
+    color: var(--fg);
+    font-family: georgia, serif;
+    font-size: medium;
+    max-width: 40em;
+    margin: 0 auto;
+    padding: 0 1em;
+}
+
+a {
+    color: var(--link-fg);
+    text-decoration: none;
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+}
